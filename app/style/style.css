@@ -1,4 +1,4 @@
-/* 1. RESET BÁSICO (Para evitar márgenes raros del navegador) */
+/* RESET BÁSICO */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,16 +11,21 @@ body {
     color: #333;
 }
 
-/* 2. FLEXBOX PARA EL HEADER (Como en las diapositivas de la clase) */
 header {
     background-color: #0b192c;
-    /* Color oscuro tipo landing premium */
     color: white;
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
-    /* Separa el logo del menú */
     align-items: center;
+    
+    /* Position Fixed: Se queda pegado arriba al hacer scroll */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Z-index: Asegura que el header siempre esté por encima del resto del contenido */
+    z-index: 100;
 }
 
 header nav {
@@ -29,35 +34,54 @@ header nav {
     font-weight: bold;
 }
 
-/* 3. CSS GRID PARA LOS PRODUCTOS (Lo que hace que se vean en columnas) */
+main {
+    padding-top: 80px; 
+}
+
 .seccion-productos {
     padding: 40px;
     display: grid;
-    /* Esto crea columnas que se adaptan solas al tamaño de la pantalla */
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+    gap: 30px; 
     max-width: 1200px;
-    margin: 0 auto;
-    /* Centra la grilla */
+    margin: 0 auto; 
 }
 
 .card {
     background-color: white;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    
+    /* Regla de oro: El padre debe ser relative para que el hijo absolute (badge) se posicione dentro de él */
     position: relative;
-
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    /* Transition: Para suavizar el hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    /* Animación de entrada: la llamamos acá pero la definimos más abajo en @keyframes */
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0; /* Arranca invisible para la animación */
 }
 
-/* Efecto al pasar el mouse */
 .card:hover {
-    transform: translateY(-5px);
-    /* Se levanta un poquito */
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    /* Sombra más fuerte */
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.card::before {
+    content: "OFERTA";
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    z-index: 10;
 }
 
 .card h3 {
@@ -92,4 +116,26 @@ header nav {
 
 .btn-comprar:hover {
     background-color: #2980b9;
+}
+
+/* Definimos la animación "fadeInUp" para que las tarjetas aparezcan desde abajo */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card img {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 15px;
 }
