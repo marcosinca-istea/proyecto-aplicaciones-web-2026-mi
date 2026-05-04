@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stardust Dragon - Detalle</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <header>
+        <h2>Neo Domino Cards</h2>
+        <nav>
+            <span class="active">Inicio</span>
+            <span>Catálogo</span>
+            <span>Contacto</span>
+        </nav>
+    </header>
+
+    <main class="main-detalle">
+        <div class="contenedor-detalle">
+
+            <!-- Botón para volver atrás -->
+            <a href="index.html" class="btn-volver">← Volver al catálogo</a>
+
+            <!-- Fila principal: Imagen + Info -->
+            <section class="producto-detalle">
+                <div class="imagen-container">
+                    <img src="img/stardust.webp" alt="Carta Stardust Dragon">
+                </div>
+
+                <div class="info-container">
+                    <span class="badge-edicion">Original Synchro</span>
+                    <h1>Stardust Dragon</h1>
+                    <p class="precio-detalle">$45.000 ARS</p>
+
+                    <p class="descripcion">
+                        Una de las cartas más icónicas de la era 5D's. Excelente estado (Near Mint).
+                        Ideal para coleccionistas o para potenciar tu Extra Deck en formatos retro.
+                    </p>
+
+                    <ul class="caracteristicas">
+                        <li><strong>Tipo:</strong> Dragón / Sincronía / Efecto</li>
+                        <li><strong>Atributo:</strong> Viento</li>
+                        <li><strong>Nivel:</strong> 8</li>
+                    </ul>
+
+                    <button class="btn-comprar btn-grande">Agregar al carrito</button>
+                </div>
+            </section>
+
+            <!-- Sección de Formulario de Reseñas (Lo que pide el profe) -->
+            <section class="seccion-resenas">
+                <h2>Dejá tu reseña del producto</h2>
+                <p>Comentanos qué te pareció esta carta para ayudar a otros duelistas.</p>
+
+                <form action="#" class="formulario-resena">
+                    <div class="grupo-input">
+                        <label for="nombre">Tu Nombre:</label>
+                        <input type="text" id="nombre" placeholder="Ej: Yusei Fudo" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="comentario">Tu Reseña:</label>
+                        <textarea id="comentario" rows="4" placeholder="Excelente estado, envío rápido..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-comprar">Enviar Reseña</button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+</body>
+
+</html>
