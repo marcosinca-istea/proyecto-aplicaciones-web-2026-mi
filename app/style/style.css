@@ -153,3 +153,150 @@ main {
     border-radius: 5px;
     margin-bottom: 15px;
 }
+
+/* =========================================
+   ESTILOS PÁGINA DE DETALLE Y FORMULARIO
+   ========================================= */
+
+.main-detalle {
+    padding-top: 100px;
+}
+
+.contenedor-detalle {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 40px 20px;
+}
+
+.btn-volver {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.btn-volver:hover {
+    color: #2980b9;
+}
+
+.producto-detalle {
+    display: flex;
+    gap: 40px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+}
+
+.imagen-container {
+    flex: 1;
+}
+
+.imagen-container img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.info-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.badge-edicion {
+    align-self: flex-start;
+    background-color: #f39c12;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.precio-detalle {
+    font-size: 2.2rem;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.descripcion {
+    line-height: 1.6;
+    color: #555;
+}
+
+.caracteristicas {
+    list-style: none;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.caracteristicas li {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.btn-grande {
+    padding: 15px;
+    font-size: 1.1rem;
+    margin-top: auto;
+}
+
+/* Estilos del Formulario de Reseñas */
+.seccion-resenas {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.seccion-resenas h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.formulario-resena {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.grupo-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.grupo-input label {
+    font-weight: bold;
+    color: #333;
+}
+
+.grupo-input input, 
+.grupo-input textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.grupo-input input:focus, 
+.grupo-input textarea:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+@media (max-width: 768px) {
+    .producto-detalle {
+        flex-direction: column; /* En celulares, apila la imagen arriba y la info abajo */
+    }
+}
