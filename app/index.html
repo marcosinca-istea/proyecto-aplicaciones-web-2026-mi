@@ -20,6 +20,18 @@
     </header>
 
     <main>
+        <div class="controles-container">
+            <div class="filtros-precio">
+                <button class="btn-filtro activo" data-filtro="todos">Todas</button>
+                <button class="btn-filtro" data-filtro="menor">Menos de $30.000</button>
+                <button class="btn-filtro" data-filtro="mayor">$30.000 o más</button>
+            </div>
+            
+            <div class="buscador-container">
+                <input type="text" id="buscador" placeholder="Buscar carta por nombre...">
+            </div>
+        </div>
+        
         <section class="seccion-productos">
 
             <div class="card">
@@ -42,9 +54,8 @@
                 <button class="btn-comprar">Agregar al carrito</button>
             </div>
 
-            <!-- Carta 3 -->
             <div class="card">
-                <a href="detalle.html" style="text-decoration: none; color: inherit;">
+                <a href="detalle-black-rose.html" style="text-decoration: none; color: inherit;">
                     <img src="img/black-rose.webp" alt="Carta Black Rose Dragon">
                     <h3>Black Rose Dragon</h3>
                 </a>
@@ -54,7 +65,7 @@
             </div>
 
             <div class="card">
-                <a href="detalle.html" style="text-decoration: none; color: inherit;">
+                <a href="detalle-junk-warrior.html" style="text-decoration: none; color: inherit;">
                     <img src="img/junk-warrior.webp" alt="Carta Junk Warrior">
                     <h3>Junk Warrior</h3>
                 </a>
@@ -64,7 +75,7 @@
             </div>
 
             <div class="card">
-                <a href="detalle.html" style="text-decoration: none; color: inherit;">
+                <a href="detalle-shooting-star.html" style="text-decoration: none; color: inherit;">
                     <img src="img/shooting-star-dragon.webp" alt="Carta Shooting Star Dragon">
                     <h3>Shooting Star Dragon</h3>
                 </a>
@@ -74,7 +85,7 @@
             </div>
 
             <div class="card">
-                <a href="detalle.html" style="text-decoration: none; color: inherit;">
+                <a href="detalle-red-nova.html" style="text-decoration: none; color: inherit;">
                     <img src="img/red-nova-dragon.webp" alt="Carta Red Nova Dragon">
                     <h3>Red Nova Dragon</h3>
                 </a>
@@ -84,7 +95,7 @@
             </div>
 
             <div class="card">
-                <a href="detalle.html" style="text-decoration: none; color: inherit;">
+                <a href="detalle-moonlight-rose.html" style="text-decoration: none; color: inherit;">
                     <img src="img/black-rose-moonlight-dragon.webp" alt="Carta Moonlight Rose Dragon">
                     <h3>Moonlight Rose Dragon</h3>
                 </a>
@@ -94,7 +105,7 @@
             </div>
 
             <div class="card">
-                <a href="detalle.html" style="text-decoration: none; color: inherit;">
+                <a href="detalle-nitro-warrior.html" style="text-decoration: none; color: inherit;">
                     <img src="img/nitro-warrior.webp" alt="Carta Nitro Warrior">
                     <h3>Nitro Warrior</h3>
                 </a>
@@ -106,6 +117,58 @@
         </section>
     </main>
 
+    <script>
+        // Usamos const para variables que no cambian de referencia
+        const inputBuscador = document.getElementById('buscador');
+        const botonesFiltro = document.querySelectorAll('.btn-filtro');
+        const tarjetas = Array.from(document.querySelectorAll('.card')); 
+        
+        let filtroPrecioActual = 'todos';
+
+        // Arrow function para aplicar la lógica conjunta (texto + precio)
+        const actualizarCatalogo = () => {
+            const textoBusqueda = inputBuscador.value.toLowerCase();
+
+            const tarjetasFiltradas = tarjetas.filter(tarjeta => {
+                const textoPrecio = tarjeta.querySelector('.precio').textContent;
+                const numeroPrecio = Number(textoPrecio.replace('$', '').replace('.', '').replace(' ARS', ''));
+
+                if (filtroPrecioActual === 'menor') return numeroPrecio < 30000;
+                if (filtroPrecioActual === 'mayor') return numeroPrecio >= 30000;
+                return true;
+            });
+
+            // 2. Mostramos u ocultamos usando if/else y forEach
+            tarjetas.forEach(tarjeta => {
+                const tituloCarta = tarjeta.querySelector('h3').textContent.toLowerCase();
+                
+                const coincideTexto = tituloCarta.includes(textoBusqueda);
+                const coincidePrecio = tarjetasFiltradas.includes(tarjeta);
+
+                if (coincideTexto && coincidePrecio) {
+                    tarjeta.style.display = 'block';
+                } else {
+                    tarjeta.style.display = 'none';
+                }
+            });
+        };
+
+        // Evento para cuando el usuario escribe en el buscador
+        inputBuscador.addEventListener('input', actualizarCatalogo);
+
+        // Eventos para los botones de precios
+        botonesFiltro.forEach(boton => {
+            boton.addEventListener('click', (e) => {
+                // Cambiar el filtro activo
+                filtroPrecioActual = e.target.getAttribute('data-filtro');
+                
+                botonesFiltro.forEach(b => b.classList.remove('activo'));
+                e.target.classList.add('activo');
+
+                actualizarCatalogo();
+            });
+        });
+    </script>
 </body>
 
 </html>
