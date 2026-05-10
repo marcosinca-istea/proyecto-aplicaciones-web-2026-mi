@@ -14,7 +14,7 @@ const btnContinuarCompra = document.getElementById('btn-continuar-compra');
 const actualizarContadorCarrito = () => {
     if (!cartCounter) return;
     const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-    cartCounter.textContent = `🛒 (${totalItems})`;
+    cartCounter.textContent = `🛒 Carrito (${totalItems})`;
 };
 
 const renderizarCarrito = () => {
