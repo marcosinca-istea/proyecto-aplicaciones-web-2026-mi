@@ -13,9 +13,9 @@
     <header>
         <h2>Neo Domino Cards</h2>
         <nav>
-            <span class="active">Inicio</span>
-            <span>Catálogo</span>
-            <span>Contacto</span>
+            <a href="index.html" class="active">Inicio</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="contacto.html">Contacto</a>
             <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 10px; border-radius: 15px; color: white; cursor: pointer; transition: 0.2s;">🛒 (0)</span>
         </nav>
     </header>
@@ -33,7 +33,7 @@
             </div>
         </div>
         
-        <section class="seccion-productos">
+        <section class="seccion-productos" id="catalogo">
 
             <div class="card">
                 <a href="detalle.html?id=stardust" style="text-decoration: none; color: inherit;">
@@ -138,7 +138,7 @@
     </div>
     
     <script>
-        /* Buscador */
+        /* 1. BUSCADOR Y FILTROS POR PRECIO */
         const inputBuscador = document.getElementById('buscador');
         const botonesFiltro = document.querySelectorAll('.btn-filtro');
         const tarjetas = Array.from(document.querySelectorAll('.card')); 
@@ -146,9 +146,12 @@
 
         const actualizarCatalogo = () => {
             const textoBusqueda = inputBuscador.value.toLowerCase();
+            
+            // Usamos .filter() como pidió el profe (Clase 6)
             const tarjetasFiltradas = tarjetas.filter(tarjeta => {
                 const boton = tarjeta.querySelector('.btn-comprar');
                 const numeroPrecio = Number(boton.getAttribute('data-precio'));
+                
                 if (filtroPrecioActual === 'menor') return numeroPrecio < 30000;
                 if (filtroPrecioActual === 'mayor') return numeroPrecio >= 30000;
                 return true; 
@@ -159,8 +162,9 @@
                 const coincideTexto = tituloCarta.includes(textoBusqueda);
                 const coincidePrecio = tarjetasFiltradas.includes(tarjeta);
 
+                // Condicional if/else (Clase 6)
                 if (coincideTexto && coincidePrecio) {
-                    tarjeta.style.display = 'block';
+                    tarjeta.style.display = 'flex';
                 } else {
                     tarjeta.style.display = 'none';
                 }
@@ -178,52 +182,51 @@
             });
         });
 
-        /* Carrito */
+        /* 2. LÓGICA DEL CARRITO CON LOCALSTORAGE */
         const botonesComprar = document.querySelectorAll('.btn-comprar');
         const cartCounter = document.getElementById('cart-counter');
 
+        // Inicializar carrito desde memoria (Clase 6)
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-        // Función con .reduce() para sumar cantidades
+        // Función con .reduce() para sumar cantidades (Clase 6)
         const actualizarContadorCarrito = () => {
-            const totalItems = carrito.reduce((acumulador, item) => acumulador + item.cantidad, 0);
+            const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
             cartCounter.textContent = `🛒 (${totalItems})`;
         };
 
-        // Actualizar al cargar la página
         actualizarContadorCarrito();
 
         botonesComprar.forEach(boton => {
             boton.addEventListener('click', (e) => {
                 e.preventDefault();
-
                 const nombre = boton.getAttribute('data-nombre');
                 const precio = Number(boton.getAttribute('data-precio'));
 
-                // Usamos .find() para ver si la carta ya está en el carrito
+                // Usamos .find() para verificar duplicados (Clase 6)
                 const itemExistente = carrito.find(item => item.nombre === nombre);
 
                 if (itemExistente) {
                     itemExistente.cantidad += 1;
                 } else {
-                    carrito.push({ nombre: nombre, precio: precio, cantidad: 1 }); // Si no, la agregamos
+                    carrito.push({ nombre, precio, cantidad: 1 });
                 }
 
-                // Guardamos en la memoria
                 localStorage.setItem('carrito', JSON.stringify(carrito));
                 actualizarContadorCarrito();
 
+                // Feedback visual
                 const textoOriginal = boton.textContent;
                 boton.textContent = '¡Agregado!';
-                boton.style.backgroundColor = '#27ae60';
+                boton.style.backgroundColor = 'var(--color-exito)';
                 setTimeout(() => {
                     boton.textContent = textoOriginal;
                     boton.style.backgroundColor = '';
                 }, 1000);
             });
-        })
+        });
         
-        /* Panel lateral*/
+        /* 3. PANEL LATERAL Y RENDERIZADO */
         const sidebarCarrito = document.getElementById('carrito-sidebar');
         const btnCerrarCarrito = document.getElementById('cerrar-carrito');
         const contenedorItems = document.getElementById('carrito-items');
@@ -239,13 +242,11 @@
             sidebarCarrito.classList.remove('abierto');
         });
 
-        // Función para dibujar la lista de productos
         const renderizarCarrito = () => {
-            // Limpiamos el HTML para no duplicar info
             contenedorItems.innerHTML = '';
 
             if (carrito.length === 0) {
-                contenedorItems.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">Tu carrito está vacío.</p>';
+                contenedorItems.innerHTML = '<p style="text-align:center; color:var(--color-texto-mutado); margin-top:20px;">Tu carrito está vacío.</p>';
                 displayTotal.textContent = '$0 ARS';
                 return;
             }
@@ -256,19 +257,18 @@
                 const subtotal = item.precio * item.cantidad;
                 totalAPagar += subtotal;
 
-                // Creamos el HTML dinámico para cada carta usando Template Literals (``)
+                // Inyección dinámica de HTML con Template Literals
                 const itemHTML = `
                     <div class="carrito-item">
                         <div class="item-info">
                             <h4>${item.nombre}</h4>
-                            <span style="color: #666; font-size: 0.9rem;">Cantidad: ${item.cantidad}</span>
+                            <span style="font-size: 0.85rem;">Cant: ${item.cantidad}</span>
                         </div>
                         <div class="item-precio">
                             $${subtotal.toLocaleString('es-AR')}
                         </div>
                     </div>
                 `;
-                // Lo inyectamos en el panel
                 contenedorItems.insertAdjacentHTML('beforeend', itemHTML);
             });
 
@@ -276,17 +276,17 @@
         };
 
         btnVaciar.addEventListener('click', () => {
-            carrito = []; // Vaciamos el array
-            localStorage.setItem('carrito', JSON.stringify(carrito)); // Guardamos en memoria
+            carrito = [];
+            localStorage.setItem('carrito', JSON.stringify(carrito));
             actualizarContadorCarrito();
             renderizarCarrito();
         });
 
-        /* Lógica del botón Continuar compra agregada acá */
+        /* 4. FLUJO DE CHECKOUT */
         const btnContinuarCompra = document.getElementById('btn-continuar-compra');
         btnContinuarCompra.addEventListener('click', () => {
             if (carrito.length === 0) {
-                alert("Tu carrito está vacío. ¡Agregá algunas cartas primero!");
+                alert("Tu carrito está vacío.");
             } else {
                 window.location.href = 'checkout.html';
             }

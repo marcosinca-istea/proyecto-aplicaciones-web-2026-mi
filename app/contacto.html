@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | Neo Domino Cards</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+    <header>
+        <h2>Neo Domino Cards</h2>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="index.html#catalogo">Catálogo</a>
+            <a href="contacto.html" class="active">Contacto</a>
+        </nav>
+    </header>
+
+    <main class="main-detalle">
+        <div class="contenedor-detalle">
+            <section class="producto-detalle" style="flex-direction: column; gap: 20px;">
+                <h1>Contactate con nosotros</h1>
+                <p>¿Tenés dudas sobre una carta o buscás alguna edición especial? Dejanos tu mensaje.</p>
+                
+                <div style="display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <h3 style="margin-bottom: 15px; color: var(--color-primario);">Información de la Tienda</h3>
+                        <p style="margin-bottom: 10px;">📍 <strong>Dirección:</strong> Av. Domino 789, Ciudad de Neo Domino</p>
+                        <p style="margin-bottom: 10px;">📧 <strong>Email:</strong> soporte@neodominocards.com</p>
+                        <p style="margin-bottom: 10px;">📞 <strong>Teléfono:</strong> +54 11 1234-5678</p>
+                        <p>⏰ <strong>Horarios:</strong> Lunes a Viernes de 10:00 a 19:00 hs.</p>
+                    </div>
+
+                    <div style="flex: 2; min-width: 300px;">
+                        <form id="form-contacto" class="formulario-resena">
+                            <div class="grupo-input">
+                                <label for="nombre-contacto">Nombre completo:</label>
+                                <input type="text" id="nombre-contacto" required placeholder="Tu nombre...">
+                            </div>
+                            <div class="grupo-input">
+                                <label for="email-contacto">Correo electrónico:</label>
+                                <input type="email" id="email-contacto" required placeholder="usuario@ejemplo.com">
+                            </div>
+                            <div class="grupo-input">
+                                <label for="asunto">Asunto:</label>
+                                <select id="asunto" style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--color-fondo);">
+                                    <option value="consulta">Consulta General</option>
+                                    <option value="pedido">Estado de Pedido</option>
+                                    <option value="stock">Busco una carta específica</option>
+                                </select>
+                            </div>
+                            <div class="grupo-input">
+                                <label for="mensaje">Mensaje:</label>
+                                <textarea id="mensaje" rows="5" required placeholder="Escribí tu consulta acá..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-comprar btn-grande">Enviar Mensaje</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Lógica simple para simular el envío del formulario (Clase 6)
+        document.getElementById('form-contacto').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre-contacto').value;
+            alert(`¡Gracias ${nombre}! Recibimos tu mensaje correctamente. Te responderemos al mail a la brevedad.`);
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
