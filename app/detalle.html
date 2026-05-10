@@ -11,8 +11,11 @@
     <header>
         <h2>Neo Domino Cards</h2>
         <nav>
-            <a href="index.html" style="color:white; text-decoration:none;">Inicio</a>
-            </nav>
+            <a href="index.html">Inicio</a>
+            <a href="index.html#catalogo">Catálogo</a>
+            <a href="contacto.html">Contacto</a>
+            <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 10px; border-radius: 15px; color: white; cursor: pointer; transition: 0.2s;">🛒 (0)</span>
+        </nav>
     </header>
 
     <main class="main-detalle">
@@ -42,41 +45,54 @@
         </div>
     </main>
 
+    <div id="carrito-sidebar" class="carrito-sidebar">
+        <div class="carrito-header">
+            <h3>Mi Carrito</h3>
+            <button id="cerrar-carrito" class="btn-cerrar">&times;</button>
+        </div>
+        <div id="carrito-items" class="carrito-items"></div>
+        <div class="carrito-footer">
+            <div class="carrito-total">
+                <span>Total a pagar:</span>
+                <span id="carrito-total-precio">$0 ARS</span>
+            </div>
+            <button id="vaciar-carrito" class="btn-vaciar">🗑️ Vaciar carrito</button>
+            <button id="btn-continuar-compra" class="btn-comprar" style="margin-top: 10px;">Continuar compra</button>
+        </div>
+    </div>
+
     <script src="productos.js"></script>
+    <script src="carrito.js"></script>
 
     <script>
-        // Obtenemos el ID de la carta desde la URL (ej: ?id=stardust)
         const parametrosURL = new URLSearchParams(window.location.search);
         const idCartaSeleccionada = parametrosURL.get('id');
-
-        // Usamos .find() para buscar el objeto en el array
         const cartaEncontrada = baseDeDatosCartas.find((carta) => carta.id === idCartaSeleccionada);
 
         if (cartaEncontrada) {
-            // Si la encuentra, usamos manipulación del DOM para rellenar el HTML
-            document.title = `${cartaEncontrada.nombre} - Detalle`; // Usamos Template literals de la clase
+            document.title = `${cartaEncontrada.nombre} | Neo Domino Cards`; 
             
             document.getElementById('detalle-img').src = cartaEncontrada.imagen;
             document.getElementById('detalle-img').alt = cartaEncontrada.nombre;
-            
             document.getElementById('detalle-titulo').textContent = cartaEncontrada.nombre;
             document.getElementById('detalle-edicion').textContent = cartaEncontrada.edicion;
             document.getElementById('detalle-desc').textContent = cartaEncontrada.descripcion;
             document.getElementById('detalle-tipo').textContent = cartaEncontrada.tipo;
             document.getElementById('detalle-nivel').textContent = cartaEncontrada.nivel;
-            
-            // Formatear precio
             document.getElementById('detalle-precio').textContent = `$${cartaEncontrada.precio.toLocaleString('es-AR')} ARS`;
 
-            // Configurar el botón para el carrito pasándole los datos dinámicos
+            // Configurar el botón de agregar usando el archivo compartido
             const botonComprar = document.getElementById('btn-agregar-dinamico');
-            botonComprar.setAttribute('data-nombre', cartaEncontrada.nombre);
-            botonComprar.setAttribute('data-precio', cartaEncontrada.precio);
+            botonComprar.addEventListener('click', () => {
+                // Llamamos a la función maestra de carrito.js
+                agregarItemAlCarrito(cartaEncontrada.nombre, cartaEncontrada.precio, cartaEncontrada.imagen, botonComprar);
+            });
         } else {
-            // Qué pasa si el usuario entra a una URL inventada (Edge case)
             document.getElementById('detalle-titulo').textContent = "Carta no encontrada";
             document.getElementById('btn-agregar-dinamico').style.display = "none";
         }
     </script>
+</body>
+</html>
 </body>
 </html>
