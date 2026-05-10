@@ -385,3 +385,98 @@ main {
     border-color: var(--color-secundario);
     box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
 }
+
+.carrito-sidebar {
+    position: fixed; /* Lo saca del flujo normal para que flote encima de todo */
+    top: 0;
+    right: -400px; /* Lo escondemos fuera de la pantalla por defecto */
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    background-color: var(--color-blanco);
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    z-index: 1000; /* Asegura que tape absolutamente todo, incluso el header */
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+
+.carrito-sidebar.abierto {
+    right: 0; /* Lo desliza hacia adentro de la pantalla */
+}
+
+.carrito-header {
+    padding: 20px;
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    color: var(--color-blanco);
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.carrito-items {
+    padding: 20px;
+    flex-grow: 1; /* Ocupa todo el espacio sobrante en el medio */
+    overflow-y: auto; /* Agrega scroll si hay muchas cartas */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.item-info h4 {
+    color: var(--color-primario);
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.item-precio {
+    color: var(--color-exito);
+    font-weight: bold;
+}
+
+.carrito-footer {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    background-color: var(--color-fondo);
+}
+
+.carrito-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-vaciar {
+    background: none;
+    border: 1px solid var(--color-alerta);
+    color: var(--color-alerta);
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.btn-vaciar:hover {
+    background-color: var(--color-alerta);
+    color: var(--color-blanco);
+}

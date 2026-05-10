@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Junk Warrior - Detalle</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+    <header>
+        <h2>Neo Domino Cards</h2>
+        <nav>
+            <span>Inicio</span>
+            <span>Catálogo</span>
+            <span>Contacto</span>
+            <span id="cart-counter" style="background: #3498db; padding: 5px 10px; border-radius: 15px; color: white;">🛒 (0)</span>
+        </nav>
+    </header>
+
+    <main class="main-detalle">
+        <div class="contenedor-detalle">
+            
+            <a href="index.html" class="btn-volver">← Volver al catálogo</a>
+
+            <section class="producto-detalle">
+                <div class="imagen-container">
+                    <img src="img/junk-warrior.webp" alt="Carta Junk Warrior">
+                </div>
+                
+                <div class="info-container">
+                    <span class="badge-edicion" style="background-color: #95a5a6;">Starter Deck</span>
+                    
+                    <h1>Junk Warrior</h1>
+                    <p class="precio-detalle">$15.000 ARS</p>
+                    
+                    <p class="descripcion">
+                        La carta insignia de Yusei en los primeros compases de la serie. Esta edición del Starter Deck presenta detalles leves por el uso, pero es perfecta para partidas retro o para completar tu colección Synchro a un precio accesible.
+                    </p>
+
+                    <ul class="caracteristicas">
+                        <li><strong>Tipo:</strong> Guerrero / Sincronía / Efecto</li>
+                        <li><strong>Atributo:</strong> Oscuridad</li>
+                        <li><strong>Nivel:</strong> 5</li>
+                    </ul>
+
+                    <button class="btn-comprar btn-grande" data-nombre="Junk Warrior" data-precio="15000">Agregar al carrito</button>
+                </div>
+            </section>
+
+            <section class="seccion-resenas">
+                <h2>Dejá tu reseña del producto</h2>
+                <p>Comentanos qué te pareció esta carta para ayudar a otros duelistas.</p>
+                
+                <form action="#" class="formulario-resena">
+                    <div class="grupo-input">
+                        <label for="nombre">Tu Nombre:</label>
+                        <input type="text" id="nombre" placeholder="Ej: Yusei Fudo" required>
+                    </div>
+                    
+                    <div class="grupo-input">
+                        <label for="comentario">Tu Reseña:</label>
+                        <textarea id="comentario" rows="4" placeholder="Excelente estado, envío rápido..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-comprar">Enviar Reseña</button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        const botonesComprar = document.querySelectorAll('.btn-comprar');
+        const cartCounter = document.getElementById('cart-counter');
+
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+        const actualizarContadorCarrito = () => {
+            const totalItems = carrito.reduce((acumulador, item) => acumulador + item.cantidad, 0);
+            cartCounter.textContent = `🛒 (${totalItems})`;
+        };
+
+        actualizarContadorCarrito();
+
+        botonesComprar.forEach(boton => {
+            boton.addEventListener('click', (e) => {
+                // Prevenir que intente mandar el formulario de abajo si hubiera conflictos
+                if(!boton.closest('form')) {
+                    e.preventDefault(); 
+                    
+                    const nombre = boton.getAttribute('data-nombre');
+                    const precio = Number(boton.getAttribute('data-precio'));
+
+                    const itemExistente = carrito.find(item => item.nombre === nombre);
+
+                    if (itemExistente) {
+                        itemExistente.cantidad += 1;
+                    } else {
+                        carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
+                    }
+
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                    actualizarContadorCarrito();
+
+                    const textoOriginal = boton.textContent;
+                    boton.textContent = '¡Agregado!';
+                    boton.style.backgroundColor = '#27ae60';
+                    setTimeout(() => {
+                        boton.textContent = textoOriginal;
+                        boton.style.backgroundColor = '';
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
