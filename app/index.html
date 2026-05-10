@@ -16,6 +16,7 @@
             <span class="active">Inicio</span>
             <span>Catálogo</span>
             <span>Contacto</span>
+            <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 10px; border-radius: 15px; color: white; cursor: pointer; transition: 0.2s;">🛒 (0)</span>
         </nav>
     </header>
 
@@ -41,7 +42,7 @@
                 </a>
                 <p>Cartas Sueltas - Edición Original. Excelente estado.</p>
                 <p class="precio">$45.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Stardust Dragon" data-precio="45000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -51,7 +52,7 @@
                 </a>
                 <p>Cartas Sueltas - Edición Original. Mint condition.</p>
                 <p class="precio">$38.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Red Dragon Archfiend" data-precio="38000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -61,7 +62,7 @@
                 </a>
                 <p>Cartas Sueltas - Edición Original. Near Mint.</p>
                 <p class="precio">$42.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Black Rose Dragon" data-precio="42000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -71,7 +72,7 @@
                 </a>
                 <p>Cartas Sueltas - Edición Starter Deck. Detalles leves.</p>
                 <p class="precio">$15.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Junk Warrior" data-precio="15000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -81,7 +82,7 @@
                 </a>
                 <p>Cartas Sueltas - Ghost Rare. Impecable.</p>
                 <p class="precio">$85.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Shooting Star Dragon" data-precio="85000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -91,7 +92,7 @@
                 </a>
                 <p>Cartas Sueltas - Secret Rare. Mint condition.</p>
                 <p class="precio">$70.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Red Nova Dragon" data-precio="70000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -101,7 +102,7 @@
                 </a>
                 <p>Cartas Sueltas - Ultra Rare. Near Mint.</p>
                 <p class="precio">$25.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Moonlight Rose Dragon" data-precio="25000">Agregar al carrito</button>
             </div>
 
             <div class="card">
@@ -111,37 +112,50 @@
                 </a>
                 <p>Cartas Sueltas - Super Rare. Detalles leves.</p>
                 <p class="precio">$8.000 ARS</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                <button class="btn-comprar" data-nombre="Nitro Warrior" data-precio="8000">Agregar al carrito</button>
             </div>
 
         </section>
     </main>
 
+    <div id="carrito-sidebar" class="carrito-sidebar">
+        <div class="carrito-header">
+            <h3>Mi Carrito</h3>
+            <button id="cerrar-carrito" class="btn-cerrar">&times;</button>
+        </div>
+        
+        <div id="carrito-items" class="carrito-items">
+            </div>
+        
+        <div class="carrito-footer">
+            <div class="carrito-total">
+                <span>Total a pagar:</span>
+                <span id="carrito-total-precio">$0 ARS</span>
+            </div>
+            <button id="vaciar-carrito" class="btn-vaciar">🗑️ Vaciar carrito</button>
+            <button class="btn-comprar" style="margin-top: 10px;">Continuar compra</button>
+        </div>
+    </div>
+    
     <script>
-        // Usamos const para variables que no cambian de referencia
+        /* Buscador */
         const inputBuscador = document.getElementById('buscador');
         const botonesFiltro = document.querySelectorAll('.btn-filtro');
         const tarjetas = Array.from(document.querySelectorAll('.card')); 
-        
         let filtroPrecioActual = 'todos';
 
-        // Arrow function para aplicar la lógica conjunta (texto + precio)
         const actualizarCatalogo = () => {
             const textoBusqueda = inputBuscador.value.toLowerCase();
-
             const tarjetasFiltradas = tarjetas.filter(tarjeta => {
-                const textoPrecio = tarjeta.querySelector('.precio').textContent;
-                const numeroPrecio = Number(textoPrecio.replace('$', '').replace('.', '').replace(' ARS', ''));
-
+                const boton = tarjeta.querySelector('.btn-comprar');
+                const numeroPrecio = Number(boton.getAttribute('data-precio'));
                 if (filtroPrecioActual === 'menor') return numeroPrecio < 30000;
                 if (filtroPrecioActual === 'mayor') return numeroPrecio >= 30000;
-                return true;
+                return true; 
             });
 
-            // 2. Mostramos u ocultamos usando if/else y forEach
             tarjetas.forEach(tarjeta => {
                 const tituloCarta = tarjeta.querySelector('h3').textContent.toLowerCase();
-                
                 const coincideTexto = tituloCarta.includes(textoBusqueda);
                 const coincidePrecio = tarjetasFiltradas.includes(tarjeta);
 
@@ -153,22 +167,120 @@
             });
         };
 
-        // Evento para cuando el usuario escribe en el buscador
         inputBuscador.addEventListener('input', actualizarCatalogo);
 
-        // Eventos para los botones de precios
         botonesFiltro.forEach(boton => {
             boton.addEventListener('click', (e) => {
-                // Cambiar el filtro activo
                 filtroPrecioActual = e.target.getAttribute('data-filtro');
-                
                 botonesFiltro.forEach(b => b.classList.remove('activo'));
                 e.target.classList.add('activo');
-
                 actualizarCatalogo();
             });
         });
+
+        /* Carrito */
+        const botonesComprar = document.querySelectorAll('.btn-comprar');
+        const cartCounter = document.getElementById('cart-counter');
+
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+        // Función con .reduce() para sumar cantidades
+        const actualizarContadorCarrito = () => {
+            const totalItems = carrito.reduce((acumulador, item) => acumulador + item.cantidad, 0);
+            cartCounter.textContent = `🛒 (${totalItems})`;
+        };
+
+        // Actualizar al cargar la página
+        actualizarContadorCarrito();
+
+        botonesComprar.forEach(boton => {
+            boton.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const nombre = boton.getAttribute('data-nombre');
+                const precio = Number(boton.getAttribute('data-precio'));
+
+                // Usamos .find() para ver si la carta ya está en el carrito
+                const itemExistente = carrito.find(item => item.nombre === nombre);
+
+                if (itemExistente) {
+                    itemExistente.cantidad += 1;
+                } else {
+                    carrito.push({ nombre: nombre, precio: precio, cantidad: 1 }); // Si no, la agregamos
+                }
+
+                // Guardamos en la memoria
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                actualizarContadorCarrito();
+
+                const textoOriginal = boton.textContent;
+                boton.textContent = '¡Agregado!';
+                boton.style.backgroundColor = '#27ae60';
+                setTimeout(() => {
+                    boton.textContent = textoOriginal;
+                    boton.style.backgroundColor = '';
+                }, 1000);
+            });
+        })
+        
+        /* Panel lateral*/
+        const sidebarCarrito = document.getElementById('carrito-sidebar');
+        const btnCerrarCarrito = document.getElementById('cerrar-carrito');
+        const contenedorItems = document.getElementById('carrito-items');
+        const displayTotal = document.getElementById('carrito-total-precio');
+        const btnVaciar = document.getElementById('vaciar-carrito');
+
+        cartCounter.addEventListener('click', () => {
+            sidebarCarrito.classList.add('abierto');
+            renderizarCarrito();
+        });
+
+        btnCerrarCarrito.addEventListener('click', () => {
+            sidebarCarrito.classList.remove('abierto');
+        });
+
+        // Función para dibujar la lista de productos
+        const renderizarCarrito = () => {
+            // Limpiamos el HTML para no duplicar info
+            contenedorItems.innerHTML = '';
+
+            if (carrito.length === 0) {
+                contenedorItems.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">Tu carrito está vacío.</p>';
+                displayTotal.textContent = '$0 ARS';
+                return;
+            }
+
+            let totalAPagar = 0;
+
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                totalAPagar += subtotal;
+
+                // Creamos el HTML dinámico para cada carta usando Template Literals (``)
+                const itemHTML = `
+                    <div class="carrito-item">
+                        <div class="item-info">
+                            <h4>${item.nombre}</h4>
+                            <span style="color: #666; font-size: 0.9rem;">Cantidad: ${item.cantidad}</span>
+                        </div>
+                        <div class="item-precio">
+                            $${subtotal.toLocaleString('es-AR')}
+                        </div>
+                    </div>
+                `;
+                // Lo inyectamos en el panel
+                contenedorItems.insertAdjacentHTML('beforeend', itemHTML);
+            });
+
+            displayTotal.textContent = `$${totalAPagar.toLocaleString('es-AR')} ARS`;
+        };
+
+        btnVaciar.addEventListener('click', () => {
+            carrito = []; // Vaciamos el array
+            localStorage.setItem('carrito', JSON.stringify(carrito)); // Guardamos en memoria
+            actualizarContadorCarrito();
+            renderizarCarrito();
+        });;
     </script>
 </body>
-
 </html>
