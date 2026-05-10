@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra | Neo Domino Cards</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+    <header>
+        <h2>Neo Domino Cards</h2>
+        <nav>
+            <a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">← Volver a la tienda</a>
+        </nav>
+    </header>
+
+    <main class="main-detalle">
+        <div class="contenedor-detalle" style="display: flex; gap: 40px; flex-wrap: wrap;">
+            
+            <section class="seccion-resenas" style="flex: 2; min-width: 300px;">
+                <h2>Datos de facturación y envío</h2>
+                <p style="margin-bottom: 20px; color: var(--color-texto-mutado);">Completá tus datos para finalizar la compra de tus cartas.</p>
+                
+                <form id="form-checkout" class="formulario-resena">
+                    <div class="grupo-input">
+                        <label for="nombre">Nombre completo:</label>
+                        <input type="text" id="nombre" placeholder="Ej: Yusei Fudo" required>
+                    </div>
+                    
+                    <div class="grupo-input">
+                        <label for="direccion">Dirección de envío:</label>
+                        <input type="text" id="direccion" placeholder="Ej: Satellite St. 123" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="tarjeta">Número de Tarjeta:</label>
+                        <input type="text" id="tarjeta" placeholder="XXXX-XXXX-XXXX-XXXX" required minlength="16" maxlength="16">
+                    </div>
+                    
+                    <button type="submit" class="btn-comprar btn-grande" style="margin-top: 10px;">Confirmar Pago</button>
+                </form>
+            </section>
+
+            <section class="seccion-resenas" style="flex: 1; min-width: 300px; height: fit-content;">
+                <h2>Resumen de tu pedido</h2>
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                
+                <div id="checkout-items" style="display: flex; flex-direction: column; gap: 10px;">
+                    </div>
+                
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                <h3 id="checkout-total" style="color: var(--color-exito); text-align: right; font-size: 1.5rem;">Total: $0 ARS</h3>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // 1. Recuperamos el carrito de la memoria
+        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+        // 2. Seguridad: Si el usuario entra por URL directo y no tiene nada, lo devolvemos
+        if (carrito.length === 0) {
+            window.location.href = 'index.html';
+        }
+
+        // 3. Renderizamos el resumen del pedido
+        const checkoutItems = document.getElementById('checkout-items');
+        const checkoutTotal = document.getElementById('checkout-total');
+        let totalAPagar = 0;
+
+        carrito.forEach(item => {
+            const subtotal = item.precio * item.cantidad;
+            totalAPagar += subtotal;
+            
+            // Inyectamos cada ítem
+            checkoutItems.innerHTML += `
+                <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+                    <span>${item.cantidad}x <strong>${item.nombre}</strong></span>
+                    <span>$${subtotal.toLocaleString('es-AR')}</span>
+                </div>
+            `;
+        });
+
+        checkoutTotal.textContent = `Total: $${totalAPagar.toLocaleString('es-AR')} ARS`;
+
+        // 4. Lógica de "Simulación de pago" al enviar el formulario
+        document.getElementById('form-checkout').addEventListener('submit', (e) => {
+            e.preventDefault(); // Evitamos que la página se recargue
+
+            // Usamos un alert nativo para avisar del éxito
+            alert("¡Pago procesado con éxito! Tus cartas ya están en preparación para el envío.");
+            
+            // Vaciamos el carrito en la memoria para simular que se cerró la orden
+            localStorage.removeItem('carrito');
+            
+            // Redirigimos al inicio
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

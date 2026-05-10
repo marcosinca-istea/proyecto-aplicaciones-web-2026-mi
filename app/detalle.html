@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Carta</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+    <header>
+        <h2>Neo Domino Cards</h2>
+        <nav>
+            <a href="index.html" style="color:white; text-decoration:none;">Inicio</a>
+            </nav>
+    </header>
+
+    <main class="main-detalle">
+        <div class="contenedor-detalle">
+            <a href="index.html" class="btn-volver">← Volver al catálogo</a>
+
+            <section class="producto-detalle">
+                <div class="imagen-container">
+                    <img id="detalle-img" src="" alt="Carta">
+                </div>
+                
+                <div class="info-container">
+                    <span id="detalle-edicion" class="badge-edicion"></span>
+                    
+                    <h1 id="detalle-titulo">Cargando...</h1>
+                    <p id="detalle-precio" class="precio-detalle"></p>
+                    <p id="detalle-desc" class="descripcion"></p>
+
+                    <ul class="caracteristicas">
+                        <li><strong>Tipo:</strong> <span id="detalle-tipo"></span></li>
+                        <li><strong>Nivel/Rango:</strong> <span id="detalle-nivel"></span></li>
+                    </ul>
+
+                    <button id="btn-agregar-dinamico" class="btn-comprar btn-grande">Agregar al carrito</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="productos.js"></script>
+
+    <script>
+        // Obtenemos el ID de la carta desde la URL (ej: ?id=stardust)
+        const parametrosURL = new URLSearchParams(window.location.search);
+        const idCartaSeleccionada = parametrosURL.get('id');
+
+        // Usamos .find() para buscar el objeto en el array
+        const cartaEncontrada = baseDeDatosCartas.find((carta) => carta.id === idCartaSeleccionada);
+
+        if (cartaEncontrada) {
+            // Si la encuentra, usamos manipulación del DOM para rellenar el HTML
+            document.title = `${cartaEncontrada.nombre} - Detalle`; // Usamos Template literals de la clase
+            
+            document.getElementById('detalle-img').src = cartaEncontrada.imagen;
+            document.getElementById('detalle-img').alt = cartaEncontrada.nombre;
+            
+            document.getElementById('detalle-titulo').textContent = cartaEncontrada.nombre;
+            document.getElementById('detalle-edicion').textContent = cartaEncontrada.edicion;
+            document.getElementById('detalle-desc').textContent = cartaEncontrada.descripcion;
+            document.getElementById('detalle-tipo').textContent = cartaEncontrada.tipo;
+            document.getElementById('detalle-nivel').textContent = cartaEncontrada.nivel;
+            
+            // Formatear precio
+            document.getElementById('detalle-precio').textContent = `$${cartaEncontrada.precio.toLocaleString('es-AR')} ARS`;
+
+            // Configurar el botón para el carrito pasándole los datos dinámicos
+            const botonComprar = document.getElementById('btn-agregar-dinamico');
+            botonComprar.setAttribute('data-nombre', cartaEncontrada.nombre);
+            botonComprar.setAttribute('data-precio', cartaEncontrada.precio);
+        } else {
+            // Qué pasa si el usuario entra a una URL inventada (Edge case)
+            document.getElementById('detalle-titulo').textContent = "Carta no encontrada";
+            document.getElementById('btn-agregar-dinamico').style.display = "none";
+        }
+    </script>
+</body>
+</html>
