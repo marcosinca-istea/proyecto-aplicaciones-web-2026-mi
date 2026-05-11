@@ -12,8 +12,9 @@
         <h2>Neo Domino Cards</h2>
         <nav>
             <a href="index.html">Inicio</a>
-            <a href="index.html#catalogo">Catálogo</a>
+            <a href="catalogo.html">Catálogo</a>
             <a href="contacto.html" class="active">Contacto</a>
+            <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 15px; border-radius: 20px; color: white; cursor: pointer; transition: 0.2s; font-weight: bold;">🛒 Carrito (0)</span>
         </nav>
     </header>
 
@@ -44,7 +45,7 @@
                             </div>
                             <div class="grupo-input">
                                 <label for="asunto">Asunto:</label>
-                                <select id="asunto" style="padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--color-fondo);">
+                                <select id="asunto">
                                     <option value="consulta">Consulta General</option>
                                     <option value="pedido">Estado de Pedido</option>
                                     <option value="stock">Busco una carta específica</option>
@@ -62,8 +63,24 @@
         </div>
     </main>
 
+    <div id="carrito-sidebar" class="carrito-sidebar">
+        <div class="carrito-header">
+            <h3>Mi Carrito</h3>
+            <button id="cerrar-carrito" class="btn-cerrar">&times;</button>
+        </div>
+        <div id="carrito-items" class="carrito-items"></div>
+        <div class="carrito-footer">
+            <div class="carrito-total">
+                <span>Total a pagar:</span>
+                <span id="carrito-total-precio">$0 ARS</span>
+            </div>
+            <button id="vaciar-carrito" class="btn-vaciar">🗑️ Vaciar carrito</button>
+            <button id="btn-continuar-compra" class="btn-comprar" style="margin-top: 10px;">Continuar compra</button>
+        </div>
+    </div>
+
+    <script src="carrito.js"></script>
     <script>
-        // Lógica simple para simular el envío del formulario (Clase 6)
         document.getElementById('form-contacto').addEventListener('submit', (e) => {
             e.preventDefault();
             const nombre = document.getElementById('nombre-contacto').value;

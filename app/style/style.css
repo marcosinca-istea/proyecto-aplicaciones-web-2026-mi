@@ -584,3 +584,60 @@ main {
         padding: 25px;
     }
 }
+
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px var(--espacio-lg);
+    min-height: calc(100vh - 90px); /* Ocupa toda la pantalla visible menos el header */
+    gap: 50px;
+}
+
+.hero-texto {
+    flex: 1;
+    max-width: 600px;
+}
+
+.hero-imagen {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Aplicando Keyframes vistos en clase para un efecto profesional */
+.carta-flotante {
+    width: 100%;
+    max-width: 380px;
+    border-radius: 15px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    animation: flotar 4s ease-in-out infinite; /* Llama a la animación */
+}
+
+@keyframes flotar {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(2deg); /* Sube y gira un poquito */
+    }
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+/* Responsive para la Hero Section */
+@media (max-width: 900px) {
+    .hero-section {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 40px;
+    }
+    
+    .hero-texto h1 {
+        font-size: 2.5rem !important;
+    }
+}

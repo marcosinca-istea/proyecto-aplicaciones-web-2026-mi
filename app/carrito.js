@@ -22,26 +22,29 @@ const renderizarCarrito = () => {
     contenedorItems.innerHTML = '';
     if (carrito.length === 0) {
         contenedorItems.innerHTML = '<p style="text-align:center; color:var(--color-texto-mutado); margin-top:20px;">Tu carrito está vacío.</p>';
-        displayTotal.textContent = '$0 ARS';
+        if(displayTotal) displayTotal.textContent = '$0 ARS';
         return;
     }
 
     let totalAPagar = 0;
-    carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
+    // Aplicamos desestructuración
+    carrito.forEach(({ nombre, precio, cantidad, imagen }) => {
+        const subtotal = precio * cantidad;
         totalAPagar += subtotal;
+
         contenedorItems.insertAdjacentHTML('beforeend', `
-            <div class="carrito-item">
-                <img src="${item.imagen}" alt="${item.nombre}" class="carrito-item-img">
-                <div class="item-info">
-                    <h4>${item.nombre}</h4>
-                    <span style="font-size: 0.85rem;">Cant: ${item.cantidad}</span>
-                </div>
-                <div class="item-precio">$${subtotal.toLocaleString('es-AR')}</div>
+        <div class="carrito-item">
+            <img src="${imagen}" alt="${nombre}" class="carrito-item-img">
+            <div class="item-info">
+                <h4>${nombre}</h4>
+                <span style="font-size: 0.85rem;">Cant: ${cantidad}</span>
             </div>
+            <div class="item-precio">$${subtotal.toLocaleString('es-AR')}</div>
+        </div>
         `);
     });
-    displayTotal.textContent = `$${totalAPagar.toLocaleString('es-AR')} ARS`;
+    
+    if(displayTotal) displayTotal.textContent = `$${totalAPagar.toLocaleString('es-AR')} ARS`;
 };
 
 // Función global para ser usada desde el Index o desde el Detalle
@@ -60,13 +63,13 @@ const agregarItemAlCarrito = (nombre, precio, imagen, botonDOM) => {
     const textoOriginal = botonDOM.textContent;
     botonDOM.textContent = '¡Agregado!';
     botonDOM.style.backgroundColor = 'var(--color-exito)';
-    setTimeout(() => { 
-        botonDOM.textContent = textoOriginal; 
-        botonDOM.style.backgroundColor = ''; 
+    setTimeout(() => {
+        botonDOM.textContent = textoOriginal;
+        botonDOM.style.backgroundColor = '';
     }, 1000);
 };
 
-// 4. Eventos del panel (Solo se ejecutan si el panel existe en la página)
+// 4. Eventos del panel
 if (cartCounter) {
     cartCounter.addEventListener('click', () => {
         sidebarCarrito.classList.add('abierto');
