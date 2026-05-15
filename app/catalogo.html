@@ -15,7 +15,7 @@
         <nav>
             <a href="index.html">Inicio</a>
             <a href="catalogo.html" class="active">Catálogo</a>
-            <a href="contacto.html">Contacto</a>
+            <a href="admin.html">Panel Admin</a>
             <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 15px; border-radius: 20px; color: white; cursor: pointer; transition: 0.2s; font-weight: bold;">🛒 Carrito (0)</span>
         </nav>
     </header>
@@ -56,87 +56,6 @@
 
             <div class="contenedor-grilla">
                 <section class="seccion-productos" id="catalogo">
-
-                    <div class="card" data-nivel="8">
-                        <a href="detalle.html?id=stardust" style="text-decoration: none; color: inherit;">
-                            <img src="img/stardust.webp" alt="Carta Stardust Dragon">
-                            <h3>Stardust Dragon</h3>
-                        </a>
-                        <p>Cartas Sueltas - Edición Original.</p>
-                        <p class="precio">$45.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Stardust Dragon" data-precio="45000" data-imagen="img/stardust.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="8">
-                        <a href="detalle.html?id=red-dragon" style="text-decoration: none; color: inherit;">
-                            <img src="img/red-dragon.webp" alt="Carta Red Dragon Archfiend">
-                            <h3>Red Dragon Archfiend</h3>
-                        </a>
-                        <p>Cartas Sueltas - Edición Original.</p>
-                        <p class="precio">$38.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Red Dragon Archfiend" data-precio="38000" data-imagen="img/red-dragon.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="7">
-                        <a href="detalle.html?id=black-rose" style="text-decoration: none; color: inherit;">
-                            <img src="img/black-rose.webp" alt="Carta Black Rose Dragon">
-                            <h3>Black Rose Dragon</h3>
-                        </a>
-                        <p>Cartas Sueltas - Edición Original.</p>
-                        <p class="precio">$42.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Black Rose Dragon" data-precio="42000" data-imagen="img/black-rose.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="5">
-                        <a href="detalle.html?id=junk-warrior" style="text-decoration: none; color: inherit;">
-                            <img src="img/junk-warrior.webp" alt="Carta Junk Warrior">
-                            <h3>Junk Warrior</h3>
-                        </a>
-                        <p>Cartas Sueltas - Edición Starter Deck.</p>
-                        <p class="precio">$15.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Junk Warrior" data-precio="15000" data-imagen="img/junk-warrior.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="10">
-                        <a href="detalle.html?id=shooting-star" style="text-decoration: none; color: inherit;">
-                            <img src="img/shooting-star-dragon.webp" alt="Carta Shooting Star Dragon">
-                            <h3>Shooting Star Dragon</h3>
-                        </a>
-                        <p>Cartas Sueltas - Ghost Rare.</p>
-                        <p class="precio">$85.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Shooting Star Dragon" data-precio="85000" data-imagen="img/shooting-star-dragon.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="10">
-                        <a href="detalle.html?id=red-nova" style="text-decoration: none; color: inherit;">
-                            <img src="img/red-nova-dragon.webp" alt="Carta Red Nova Dragon">
-                            <h3>Red Nova Dragon</h3>
-                        </a>
-                        <p>Cartas Sueltas - Secret Rare.</p>
-                        <p class="precio">$70.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Red Nova Dragon" data-precio="70000" data-imagen="img/red-nova-dragon.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="7">
-                        <a href="detalle.html?id=moonlight-rose" style="text-decoration: none; color: inherit;">
-                            <img src="img/black-rose-moonlight-dragon.webp" alt="Carta Moonlight Rose Dragon">
-                            <h3>Moonlight Rose Dragon</h3>
-                        </a>
-                        <p>Cartas Sueltas - Ultra Rare.</p>
-                        <p class="precio">$25.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Moonlight Rose Dragon" data-precio="25000" data-imagen="img/black-rose-moonlight-dragon.webp">Agregar al carrito</button>
-                    </div>
-
-                    <div class="card" data-nivel="7">
-                        <a href="detalle.html?id=nitro-warrior" style="text-decoration: none; color: inherit;">
-                            <img src="img/nitro-warrior.webp" alt="Carta Nitro Warrior">
-                            <h3>Nitro Warrior</h3>
-                        </a>
-                        <p>Cartas Sueltas - Super Rare.</p>
-                        <p class="precio">$8.000 ARS</p>
-                        <button class="btn-comprar" data-nombre="Nitro Warrior" data-precio="8000" data-imagen="img/nitro-warrior.webp">Agregar al carrito</button>
-                    </div>
-
                 </section>
             </div>
         </div>
@@ -161,81 +80,114 @@
     <script src="carrito.js"></script>
     
     <script>
+        const cartasBase = [
+            { id: 'stardust', nombre: 'Stardust Dragon', nivel: 8, precio: 45000, imagen: 'img/stardust.webp', desc: 'Cartas Sueltas - Edición Original.' },
+            { id: 'red-dragon', nombre: 'Red Dragon Archfiend', nivel: 8, precio: 38000, imagen: 'img/red-dragon.webp', desc: 'Cartas Sueltas - Edición Original.' },
+            { id: 'black-rose', nombre: 'Black Rose Dragon', nivel: 7, precio: 42000, imagen: 'img/black-rose.webp', desc: 'Cartas Sueltas - Edición Original.' },
+            { id: 'junk-warrior', nombre: 'Junk Warrior', nivel: 5, precio: 15000, imagen: 'img/junk-warrior.webp', desc: 'Cartas Sueltas - Starter Deck.' },
+            { id: 'shooting-star', nombre: 'Shooting Star Dragon', nivel: 10, precio: 85000, imagen: 'img/shooting-star-dragon.webp', desc: 'Cartas Sueltas - Ghost Rare.' },
+            { id: 'red-nova', nombre: 'Red Nova Dragon', nivel: 10, precio: 70000, imagen: 'img/red-nova-dragon.webp', desc: 'Cartas Sueltas - Secret Rare.' },
+            { id: 'moonlight-rose', nombre: 'Moonlight Rose Dragon', nivel: 7, precio: 25000, imagen: 'img/black-rose-moonlight-dragon.webp', desc: 'Cartas Sueltas - Ultra Rare.' },
+            { id: 'nitro-warrior', nombre: 'Nitro Warrior', nivel: 7, precio: 8000, imagen: 'img/nitro-warrior.webp', desc: 'Cartas Sueltas - Super Rare.' }
+        ];
+
+        // 2. Traemos las cartas que el Admin subió desde el localStorage
+        const cartasCustom = JSON.parse(localStorage.getItem('catalogo_custom')) || [];
+
+        // 3. Unimos todo en un solo catálogo
+        const catalogoCompleto = [...cartasBase, ...cartasCustom];
+
+        // Elementos del DOM
+        const seccionCatalogo = document.getElementById('catalogo');
         const inputBuscador = document.getElementById('buscador');
         const botonesFiltro = document.querySelectorAll('.btn-filtro');
         const checkboxesNivel = document.querySelectorAll('.check-nivel');
-        const tarjetas = Array.from(document.querySelectorAll('.card')); 
-        const seccionCatalogo = document.getElementById('catalogo');
         
         let filtroPrecioActual = 'todos';
 
-        const actualizarCatalogo = () => {
-            const textoBusqueda = inputBuscador.value.toLowerCase();
-            const nivelesSeleccionados = Array.from(checkboxesNivel).filter(cb => cb.checked).map(cb => cb.value);
-
-            tarjetas.forEach(tarjeta => {
-                const tituloCarta = tarjeta.querySelector('h3').textContent.toLowerCase();
-                const boton = tarjeta.querySelector('.btn-comprar');
-                const numeroPrecio = Number(boton.getAttribute('data-precio'));
-                
-                let nivelCarta = tarjeta.getAttribute('data-nivel');
-                if(Number(nivelCarta) >= 10) nivelCarta = "10";
-
-                const coincideTexto = tituloCarta.includes(textoBusqueda);
-                
-                let coincidePrecio = true;
-                if (filtroPrecioActual === 'menor') coincidePrecio = numeroPrecio < 30000;
-                if (filtroPrecioActual === 'mayor') coincidePrecio = numeroPrecio >= 30000;
-                
-                let coincideNivel = true;
-                if (nivelesSeleccionados.length > 0) {
-                    coincideNivel = nivelesSeleccionados.includes(nivelCarta);
-                }
-
-                if (coincideTexto && coincidePrecio && coincideNivel) {
-                    tarjeta.style.display = 'flex';
-                } else {
-                    tarjeta.style.display = 'none';
-                }
-            });
-
-            // Lógica avanzada: Mensaje de "Estado Vacío"
-            const cartasVisibles = tarjetas.filter(t => t.style.display === 'flex');
-            let mensajeVacio = document.getElementById('mensaje-vacio');
-
-            if (cartasVisibles.length === 0) {
-                if (!mensajeVacio) {
-                    seccionCatalogo.insertAdjacentHTML('beforeend', '<p id="mensaje-vacio" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-texto-mutado); font-size: 1.2rem;">No se encontraron cartas con esos filtros.</p>');
-                }
-            } else if (mensajeVacio) {
-                mensajeVacio.remove();
+        // 4. Función para dibujar las cartas en pantalla
+        const renderizarCatalogo = (cartasA_Mostrar) => {
+            seccionCatalogo.innerHTML = ''; // Limpiamos la grilla
+            
+            if (cartasA_Mostrar.length === 0) {
+                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-texto-mutado); font-size: 1.2rem;">No se encontraron cartas con esos filtros.</p>';
+                return;
             }
+
+            cartasA_Mostrar.forEach(carta => {
+                // Ajuste para el data-nivel (agrupar 10 o más)
+                let nivelNormalizado = Number(carta.nivel) >= 10 ? 10 : carta.nivel;
+
+                seccionCatalogo.insertAdjacentHTML('beforeend', `
+                    <div class="card" data-nivel="${nivelNormalizado}">
+                        <a href="detalle.html?id=${carta.id}" style="text-decoration: none; color: inherit;">
+                            <img src="${carta.imagen}" alt="Carta ${carta.nombre}">
+                            <h3>${carta.nombre}</h3>
+                        </a>
+                        <p>${carta.desc || 'Cartas Sueltas - Nueva Adición.'}</p>
+                        <p class="precio">$${carta.precio.toLocaleString('es-AR')} ARS</p>
+                        <button class="btn-comprar" data-nombre="${carta.nombre}" data-precio="${carta.precio}" data-imagen="${carta.imagen}">Agregar al carrito</button>
+                    </div>
+                `);
+            });
         };
 
-        // Event Listeners
-        inputBuscador.addEventListener('input', actualizarCatalogo);
-        checkboxesNivel.forEach(cb => cb.addEventListener('change', actualizarCatalogo));
+        // 5. Función de Filtros
+        const aplicarFiltros = () => {
+            const textoBusqueda = inputBuscador.value.toLowerCase();
+            const nivelesSeleccionados = Array.from(checkboxesNivel).filter(cb => cb.checked).map(cb => Number(cb.value));
+
+            const cartasFiltradas = catalogoCompleto.filter(carta => {
+                // Filtro Texto
+                const coincideTexto = carta.nombre.toLowerCase().includes(textoBusqueda);
+                
+                // Filtro Precio
+                let coincidePrecio = true;
+                if (filtroPrecioActual === 'menor') coincidePrecio = carta.precio < 30000;
+                if (filtroPrecioActual === 'mayor') coincidePrecio = carta.precio >= 30000;
+                
+                // Filtro Nivel
+                let coincideNivel = true;
+                if (nivelesSeleccionados.length > 0) {
+                    let nivelNorm = Number(carta.nivel) >= 10 ? 10 : Number(carta.nivel);
+                    coincideNivel = nivelesSeleccionados.includes(nivelNorm);
+                }
+
+                return coincideTexto && coincidePrecio && coincideNivel;
+            });
+
+            renderizarCatalogo(cartasFiltradas);
+        };
+
+        // 6. Escuchadores de Eventos para los filtros
+        inputBuscador.addEventListener('input', aplicarFiltros);
+        checkboxesNivel.forEach(cb => cb.addEventListener('change', aplicarFiltros));
 
         botonesFiltro.forEach(boton => {
             boton.addEventListener('click', (e) => {
                 filtroPrecioActual = e.target.getAttribute('data-filtro');
                 botonesFiltro.forEach(b => b.classList.remove('activo'));
                 e.target.classList.add('activo');
-                actualizarCatalogo();
+                aplicarFiltros();
             });
         });
 
-        // Configuración de los botones Agregar usando el archivo compartido
-        document.querySelectorAll('.btn-comprar').forEach(boton => {
-            boton.addEventListener('click', (e) => {
+        // 7. Delegación de Eventos para los botones de compra (Concepto Clase 5)
+        seccionCatalogo.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-comprar')) {
                 e.preventDefault();
+                const boton = e.target;
                 const nombre = boton.getAttribute('data-nombre');
                 const precio = Number(boton.getAttribute('data-precio'));
                 const imagen = boton.getAttribute('data-imagen');
                 
+                // Llamamos a la función global de tu carrito.js
                 agregarItemAlCarrito(nombre, precio, imagen, boton);
-            });
+            }
         });
+
+        // Iniciamos el catálogo por primera vez
+        renderizarCatalogo(catalogoCompleto);
     </script>
 </body>
 </html>

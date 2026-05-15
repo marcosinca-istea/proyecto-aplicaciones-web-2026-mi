@@ -641,3 +641,26 @@ main {
         font-size: 2.5rem !important;
     }
 }
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 10px;
+        text-align: center;
+    }
+
+    header nav {
+        flex-wrap: wrap; /* Si los botones no entran, bajan a la siguiente línea */
+        justify-content: center;
+        gap: 10px;
+    }
+
+    main {
+        padding-top: 140px; 
+    }
+    
+    .main-detalle {
+        padding-top: 140px;
+    }
+}

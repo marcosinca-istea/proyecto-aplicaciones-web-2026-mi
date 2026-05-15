@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | Neo Domino Cards</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+    <header>
+        <h2>Neo Domino Cards | ADMIN</h2>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="admin.html" class="active">Panel Admin</a>
+        </nav>
+    </header>
+
+    <main class="main-detalle">
+        <div class="contenedor-detalle">
+            
+            <section id="seccion-login" class="seccion-resenas" style="max-width: 400px; margin: 0 auto;">
+                <h2 style="color: var(--color-primario); text-align: center;">Acceso Restringido</h2>
+                <p style="margin-bottom: 20px; color: var(--color-texto-mutado); text-align: center;">
+                    Ingresá tus credenciales para continuar.
+                </p>
+                
+                <form id="form-login" class="formulario-resena">
+                    <div class="grupo-input">
+                        <label for="login-user">Usuario:</label>
+                        <input type="text" id="login-user" placeholder="Ej: admin" required>
+                    </div>
+                    <div class="grupo-input">
+                        <label for="login-pass">Contraseña:</label>
+                        <input type="password" id="login-pass" required>
+                    </div>
+                    <button type="submit" class="btn-comprar btn-grande" style="margin-top: 15px;">Ingresar</button>
+                </form>
+            </section>
+
+            <section id="seccion-admin" class="seccion-resenas" style="max-width: 600px; margin: 0 auto; display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: var(--color-secundario); margin: 0;">Subir Nueva Carta</h2>
+                    <button id="btn-cerrar-sesion" style="background: none; border: none; color: var(--color-alerta); cursor: pointer; font-weight: bold; text-decoration: underline;">Cerrar Sesión</button>
+                </div>
+                
+                <p style="margin-bottom: 20px; color: var(--color-texto-mutado);">
+                    Completá los datos para agregar un nuevo producto al catálogo.
+                </p>
+                
+                <form id="form-admin" class="formulario-resena">
+                    <div class="grupo-input">
+                        <label for="admin-nombre">Nombre de la carta:</label>
+                        <input type="text" id="admin-nombre" placeholder="Ej: Blue-Eyes White Dragon" required>
+                    </div>
+                    <div class="grupo-input">
+                        <label for="admin-precio">Precio (ARS):</label>
+                        <input type="number" id="admin-precio" placeholder="Ej: 50000" min="0" required>
+                    </div>
+                    <div class="grupo-input">
+                        <label for="admin-nivel">Nivel / Estrellas:</label>
+                        <input type="number" id="admin-nivel" placeholder="Ej: 8" min="1" max="12" required>
+                    </div>
+                    <div class="grupo-input">
+                        <label for="admin-imagen">Ruta de la imagen:</label>
+                        <input type="text" id="admin-imagen" placeholder="Ej: img/blue-eyes.webp" required>
+                    </div>
+                    <button type="submit" class="btn-comprar btn-grande" style="margin-top: 15px;">💾 Guardar Carta</button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // --- 1. LÓGICA DE LOGIN ---
+        const formLogin = document.getElementById('form-login');
+        const seccionLogin = document.getElementById('seccion-login');
+        const seccionAdmin = document.getElementById('seccion-admin');
+        const btnCerrarSesion = document.getElementById('btn-cerrar-sesion');
+
+        // Credenciales estáticas para el TP
+        const USUARIO_CORRECTO = 'admin';
+        const PASS_CORRECTA = 'admin123';
+
+        // Verificamos si ya inició sesión antes (al recargar la página)
+        if (sessionStorage.getItem('isAdminLogueado') === 'true') {
+            seccionLogin.style.display = 'none';
+            seccionAdmin.style.display = 'block';
+        }
+
+        formLogin.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+
+            if (user === USUARIO_CORRECTO && pass === PASS_CORRECTA) {
+                // Guardamos la sesión
+                sessionStorage.setItem('isAdminLogueado', 'true');
+                // Alternamos las vistas
+                seccionLogin.style.display = 'none';
+                seccionAdmin.style.display = 'block';
+            } else {
+                alert('Credenciales incorrectas. Intente nuevamente.');
+            }
+        });
+
+        btnCerrarSesion.addEventListener('click', () => {
+            sessionStorage.removeItem('isAdminLogueado');
+            location.reload(); // Recarga la página para volver a mostrar el login
+        });
+
+
+        // --- 2. LÓGICA DE GUARDAR CARTA (La que ya tenías) ---
+        const formAdmin = document.getElementById('form-admin');
+
+        formAdmin.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const nombre = document.getElementById('admin-nombre').value;
+            const precio = Number(document.getElementById('admin-precio').value);
+            const nivel = document.getElementById('admin-nivel').value;
+            const imagen = document.getElementById('admin-imagen').value;
+
+            const nuevaCarta = {
+                id: nombre.toLowerCase().replace(/\s+/g, '-'), 
+                nombre: nombre,
+                precio: precio,
+                nivel: nivel,
+                imagen: imagen
+            };
+
+            let catalogoGuardado = JSON.parse(localStorage.getItem('catalogo_custom')) || [];
+            catalogoGuardado.push(nuevaCarta);
+            localStorage.setItem('catalogo_custom', JSON.stringify(catalogoGuardado));
+
+            alert(`¡Éxito! La carta "${nombre}" fue guardada en el sistema.`);
+            formAdmin.reset();
+        });
+    </script>
+</body>
+</html>
