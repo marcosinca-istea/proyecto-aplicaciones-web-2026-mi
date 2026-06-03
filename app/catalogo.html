@@ -79,7 +79,14 @@
     
     <script src="carrito.js"></script>
     
-    <script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // Mismas credenciales
+        const SUPABASE_URL = 'https://sekoqjsonihqujslleow.supabase.co';
+        const ANON_KEY = 'sb_publishable_TeGqL0RKJW1sPqoOWARLhQ_TiFtueAC'; 
+        const db = createClient(SUPABASE_URL, ANON_KEY);
+
         let catalogoCompleto = [];
 
         // Elementos del DOM
@@ -87,43 +94,31 @@
         const inputBuscador = document.getElementById('buscador');
         const botonesFiltro = document.querySelectorAll('.btn-filtro');
         const checkboxesNivel = document.querySelectorAll('.check-nivel');
-        
         let filtroPrecioActual = 'todos';
 
-        // 1. Función asíncrona para consumir nuestra API local
+        // 1. Función asíncrona para traer cartas desde Supabase (Método .select)
         const cargarProductos = async () => {
             try {
-                // Le pegamos a nuestro propio archivo JSON local
-                const respuesta = await fetch('productos.json');
+                const { data, error } = await db.from('productos').select('*');
                 
-                if (!respuesta.ok) {
-                    throw new Error(`HTTP error! status: ${respuesta.status}`);
-                }
+                if (error) throw error;
                 
-                // Convertimos la respuesta. Como ya tienen nuestras propiedades, no usamos .map()
-                const cartasBase = await respuesta.json();
-                
-                // Traemos los productos guardados en LocalStorage desde el Panel Admin
-                const cartasCustom = JSON.parse(localStorage.getItem('catalogo_custom')) || [];
-                
-                // Concatenamos ambos orígenes de datos en el arreglo global
-                catalogoCompleto = [...cartasBase, ...cartasCustom];
-                
-                // Dibujamos la vista inicial en el DOM
+                // Actualizamos nuestro catálogo global con los datos reales
+                catalogoCompleto = data || [];
                 renderizarCatalogo(catalogoCompleto);
                 
             } catch (error) {
                 console.error("Fallo al obtener los productos:", error);
-                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--color-alerta); margin-top: 40px; font-weight: bold;">Error al cargar las cartas. Recordá abrir el proyecto usando Live Server en VS Code.</p>';
+                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--color-alerta); font-weight: bold;">Error al cargar las cartas desde la base de datos.</p>';
             }
         };
 
-        // 2. Función encargada del renderizado dinámico mediante Template Literals
+        // 2. Renderizado dinámico
         const renderizarCatalogo = (cartasA_Mostrar) => {
             seccionCatalogo.innerHTML = '';
             
             if (cartasA_Mostrar.length === 0) {
-                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-texto-mutado); font-size: 1.2rem;">No se encontraron cartas con los filtros seleccionados.</p>';
+                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-texto-mutado);">No hay cartas disponibles.</p>';
                 return;
             }
 
@@ -136,7 +131,7 @@
                             <img src="${carta.imagen}" alt="${carta.nombre}">
                             <h3>${carta.nombre}</h3>
                         </a>
-                        <p>${carta.desc || 'Cartas Sueltas - Nueva Adición.'}</p>
+                        <p>${carta.descripcion || ''}</p>
                         <p class="precio">$${carta.precio.toLocaleString('es-AR')} ARS</p>
                         <button class="btn-comprar" data-nombre="${carta.nombre}" data-precio="${carta.precio}" data-imagen="${carta.imagen}">Agregar al carrito</button>
                     </div>
@@ -151,7 +146,6 @@
 
             const cartasFiltradas = catalogoCompleto.filter(carta => {
                 const coincideTexto = carta.nombre.toLowerCase().includes(textoBusqueda);
-                
                 let coincidePrecio = true;
                 if (filtroPrecioActual === 'menor') coincidePrecio = carta.precio < 30000;
                 if (filtroPrecioActual === 'mayor') coincidePrecio = carta.precio >= 30000;
@@ -161,17 +155,15 @@
                     let nivelNorm = Number(carta.nivel) >= 10 ? 10 : Number(carta.nivel);
                     coincideNivel = nivelesSeleccionados.includes(nivelNorm);
                 }
-
                 return coincideTexto && coincidePrecio && coincideNivel;
             });
 
             renderizarCatalogo(cartasFiltradas);
         };
 
-        // 4. Listeners para el flujo de interacción de los filtros
+        // 4. Listeners de eventos
         inputBuscador.addEventListener('input', aplicarFiltros);
         checkboxesNivel.forEach(cb => cb.addEventListener('change', aplicarFiltros));
-
         botonesFiltro.forEach(boton => {
             boton.addEventListener('click', (e) => {
                 filtroPrecioActual = e.target.getAttribute('data-filtro');
@@ -181,7 +173,6 @@
             });
         });
 
-        // 5. Delegación de Eventos para la inyección reactiva al Carrito
         seccionCatalogo.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-comprar')) {
                 e.preventDefault();
@@ -190,12 +181,12 @@
                 const precio = Number(boton.getAttribute('data-precio'));
                 const imagen = boton.getAttribute('data-imagen');
                 
-                // Ejecuta la función global contenida en carrito.js
+                // Usa la función del archivo carrito.js
                 agregarItemAlCarrito(nombre, precio, imagen, boton);
             }
         });
 
-        // Inicialización de la secuencia asíncrona
+        // Inicializamos trayendo los datos
         cargarProductos();
     </script>
 </body>
