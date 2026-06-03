@@ -73,18 +73,20 @@
         </div>
     </main>
 
-    <script>
-        // --- 1. LÓGICA DE LOGIN ---
+    <script type="module">
+        // --- 1. CONFIGURACIÓN DE SUPABASE ---
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = 'https://sekoqjsonihqujslleow.supabase.co';
+        const ANON_KEY = 'sb_publishable_TeGqL0RKJW1sPqoOWARLhQ_TiFtueAC';
+        const db = createClient(SUPABASE_URL, ANON_KEY);
+
+        // --- 2. LÓGICA DE LOGIN ---
         const formLogin = document.getElementById('form-login');
         const seccionLogin = document.getElementById('seccion-login');
         const seccionAdmin = document.getElementById('seccion-admin');
         const btnCerrarSesion = document.getElementById('btn-cerrar-sesion');
 
-        // Credenciales estáticas para el TP
-        const USUARIO_CORRECTO = 'admin';
-        const PASS_CORRECTA = 'admin123';
-
-        // Verificamos si ya inició sesión antes (al recargar la página)
         if (sessionStorage.getItem('isAdminLogueado') === 'true') {
             seccionLogin.style.display = 'none';
             seccionAdmin.style.display = 'block';
@@ -95,48 +97,51 @@
             const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
 
-            if (user === USUARIO_CORRECTO && pass === PASS_CORRECTA) {
-                // Guardamos la sesión
+            if (user === 'admin' && pass === 'admin123') {
                 sessionStorage.setItem('isAdminLogueado', 'true');
-                // Alternamos las vistas
                 seccionLogin.style.display = 'none';
                 seccionAdmin.style.display = 'block';
             } else {
-                alert('Credenciales incorrectas. Intente nuevamente.');
+                alert('Credenciales incorrectas.');
             }
         });
 
         btnCerrarSesion.addEventListener('click', () => {
             sessionStorage.removeItem('isAdminLogueado');
-            location.reload(); // Recarga la página para volver a mostrar el login
+            location.reload(); 
         });
 
-
-        // --- 2. LÓGICA DE GUARDAR CARTA (La que ya tenías) ---
+        // --- 3. LÓGICA DE GUARDAR CARTA EN LA NUBE (Método .insert) ---
         const formAdmin = document.getElementById('form-admin');
 
-        formAdmin.addEventListener('submit', (e) => {
+        formAdmin.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const nombre = document.getElementById('admin-nombre').value;
             const precio = Number(document.getElementById('admin-precio').value);
             const nivel = document.getElementById('admin-nivel').value;
             const imagen = document.getElementById('admin-imagen').value;
+            const idCarta = nombre.toLowerCase().replace(/\s+/g, '-');
 
-            const nuevaCarta = {
-                id: nombre.toLowerCase().replace(/\s+/g, '-'), 
-                nombre: nombre,
-                precio: precio,
-                nivel: nivel,
-                imagen: imagen
-            };
+            // Usamos el método INSERT de Supabase
+            const { data, error } = await db.from('productos').insert([
+                {
+                    id: idCarta,
+                    nombre: nombre,
+                    precio: precio,
+                    nivel: Number(nivel),
+                    imagen: imagen,
+                    descripcion: 'Cartas Sueltas - Nueva Adición.'
+                }
+            ]);
 
-            let catalogoGuardado = JSON.parse(localStorage.getItem('catalogo_custom')) || [];
-            catalogoGuardado.push(nuevaCarta);
-            localStorage.setItem('catalogo_custom', JSON.stringify(catalogoGuardado));
-
-            alert(`¡Éxito! La carta "${nombre}" fue guardada en el sistema.`);
-            formAdmin.reset();
+            if (error) {
+                console.error("Error al guardar en Supabase:", error);
+                alert("Hubo un error al guardar: " + error.message);
+            } else {
+                alert(`¡Éxito! La carta "${nombre}" fue guardada en tu base de datos en la nube.`);
+                formAdmin.reset();
+            }
         });
     </script>
 </body>

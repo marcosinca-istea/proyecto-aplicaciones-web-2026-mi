@@ -79,52 +79,59 @@
     
     <script src="carrito.js"></script>
     
-    <script>
-        const cartasBase = [
-            { id: 'stardust', nombre: 'Stardust Dragon', nivel: 8, precio: 45000, imagen: 'img/stardust.webp', desc: 'Cartas Sueltas - Edición Original.' },
-            { id: 'red-dragon', nombre: 'Red Dragon Archfiend', nivel: 8, precio: 38000, imagen: 'img/red-dragon.webp', desc: 'Cartas Sueltas - Edición Original.' },
-            { id: 'black-rose', nombre: 'Black Rose Dragon', nivel: 7, precio: 42000, imagen: 'img/black-rose.webp', desc: 'Cartas Sueltas - Edición Original.' },
-            { id: 'junk-warrior', nombre: 'Junk Warrior', nivel: 5, precio: 15000, imagen: 'img/junk-warrior.webp', desc: 'Cartas Sueltas - Starter Deck.' },
-            { id: 'shooting-star', nombre: 'Shooting Star Dragon', nivel: 10, precio: 85000, imagen: 'img/shooting-star-dragon.webp', desc: 'Cartas Sueltas - Ghost Rare.' },
-            { id: 'red-nova', nombre: 'Red Nova Dragon', nivel: 10, precio: 70000, imagen: 'img/red-nova-dragon.webp', desc: 'Cartas Sueltas - Secret Rare.' },
-            { id: 'moonlight-rose', nombre: 'Moonlight Rose Dragon', nivel: 7, precio: 25000, imagen: 'img/black-rose-moonlight-dragon.webp', desc: 'Cartas Sueltas - Ultra Rare.' },
-            { id: 'nitro-warrior', nombre: 'Nitro Warrior', nivel: 7, precio: 8000, imagen: 'img/nitro-warrior.webp', desc: 'Cartas Sueltas - Super Rare.' }
-        ];
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        // 2. Traemos las cartas que el Admin subió desde el localStorage
-        const cartasCustom = JSON.parse(localStorage.getItem('catalogo_custom')) || [];
+        // Mismas credenciales
+        const SUPABASE_URL = 'https://sekoqjsonihqujslleow.supabase.co';
+        const ANON_KEY = 'sb_publishable_TeGqL0RKJW1sPqoOWARLhQ_TiFtueAC'; 
+        const db = createClient(SUPABASE_URL, ANON_KEY);
 
-        // 3. Unimos todo en un solo catálogo
-        const catalogoCompleto = [...cartasBase, ...cartasCustom];
+        let catalogoCompleto = [];
 
         // Elementos del DOM
         const seccionCatalogo = document.getElementById('catalogo');
         const inputBuscador = document.getElementById('buscador');
         const botonesFiltro = document.querySelectorAll('.btn-filtro');
         const checkboxesNivel = document.querySelectorAll('.check-nivel');
-        
         let filtroPrecioActual = 'todos';
 
-        // 4. Función para dibujar las cartas en pantalla
+        // 1. Función asíncrona para traer cartas desde Supabase (Método .select)
+        const cargarProductos = async () => {
+            try {
+                const { data, error } = await db.from('productos').select('*');
+                
+                if (error) throw error;
+                
+                // Actualizamos nuestro catálogo global con los datos reales
+                catalogoCompleto = data || [];
+                renderizarCatalogo(catalogoCompleto);
+                
+            } catch (error) {
+                console.error("Fallo al obtener los productos:", error);
+                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--color-alerta); font-weight: bold;">Error al cargar las cartas desde la base de datos.</p>';
+            }
+        };
+
+        // 2. Renderizado dinámico
         const renderizarCatalogo = (cartasA_Mostrar) => {
-            seccionCatalogo.innerHTML = ''; // Limpiamos la grilla
+            seccionCatalogo.innerHTML = '';
             
             if (cartasA_Mostrar.length === 0) {
-                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-texto-mutado); font-size: 1.2rem;">No se encontraron cartas con esos filtros.</p>';
+                seccionCatalogo.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--color-texto-mutado);">No hay cartas disponibles.</p>';
                 return;
             }
 
             cartasA_Mostrar.forEach(carta => {
-                // Ajuste para el data-nivel (agrupar 10 o más)
                 let nivelNormalizado = Number(carta.nivel) >= 10 ? 10 : carta.nivel;
 
                 seccionCatalogo.insertAdjacentHTML('beforeend', `
                     <div class="card" data-nivel="${nivelNormalizado}">
                         <a href="detalle.html?id=${carta.id}" style="text-decoration: none; color: inherit;">
-                            <img src="${carta.imagen}" alt="Carta ${carta.nombre}">
+                            <img src="${carta.imagen}" alt="${carta.nombre}">
                             <h3>${carta.nombre}</h3>
                         </a>
-                        <p>${carta.desc || 'Cartas Sueltas - Nueva Adición.'}</p>
+                        <p>${carta.descripcion || ''}</p>
                         <p class="precio">$${carta.precio.toLocaleString('es-AR')} ARS</p>
                         <button class="btn-comprar" data-nombre="${carta.nombre}" data-precio="${carta.precio}" data-imagen="${carta.imagen}">Agregar al carrito</button>
                     </div>
@@ -132,37 +139,31 @@
             });
         };
 
-        // 5. Función de Filtros
+        // 3. Sistema integrado de Filtros
         const aplicarFiltros = () => {
             const textoBusqueda = inputBuscador.value.toLowerCase();
             const nivelesSeleccionados = Array.from(checkboxesNivel).filter(cb => cb.checked).map(cb => Number(cb.value));
 
             const cartasFiltradas = catalogoCompleto.filter(carta => {
-                // Filtro Texto
                 const coincideTexto = carta.nombre.toLowerCase().includes(textoBusqueda);
-                
-                // Filtro Precio
                 let coincidePrecio = true;
                 if (filtroPrecioActual === 'menor') coincidePrecio = carta.precio < 30000;
                 if (filtroPrecioActual === 'mayor') coincidePrecio = carta.precio >= 30000;
                 
-                // Filtro Nivel
                 let coincideNivel = true;
                 if (nivelesSeleccionados.length > 0) {
                     let nivelNorm = Number(carta.nivel) >= 10 ? 10 : Number(carta.nivel);
                     coincideNivel = nivelesSeleccionados.includes(nivelNorm);
                 }
-
                 return coincideTexto && coincidePrecio && coincideNivel;
             });
 
             renderizarCatalogo(cartasFiltradas);
         };
 
-        // 6. Escuchadores de Eventos para los filtros
+        // 4. Listeners de eventos
         inputBuscador.addEventListener('input', aplicarFiltros);
         checkboxesNivel.forEach(cb => cb.addEventListener('change', aplicarFiltros));
-
         botonesFiltro.forEach(boton => {
             boton.addEventListener('click', (e) => {
                 filtroPrecioActual = e.target.getAttribute('data-filtro');
@@ -172,7 +173,6 @@
             });
         });
 
-        // 7. Delegación de Eventos para los botones de compra (Concepto Clase 5)
         seccionCatalogo.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-comprar')) {
                 e.preventDefault();
@@ -181,13 +181,13 @@
                 const precio = Number(boton.getAttribute('data-precio'));
                 const imagen = boton.getAttribute('data-imagen');
                 
-                // Llamamos a la función global de tu carrito.js
+                // Usa la función del archivo carrito.js
                 agregarItemAlCarrito(nombre, precio, imagen, boton);
             }
         });
 
-        // Iniciamos el catálogo por primera vez
-        renderizarCatalogo(catalogoCompleto);
+        // Inicializamos trayendo los datos
+        cargarProductos();
     </script>
 </body>
 </html>
