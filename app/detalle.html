@@ -61,9 +61,11 @@
         </div>
     </div>
 
+    <script src="darkmode.js"></script>
     <script src="productos.js"></script>
     <script src="carrito.js"></script>
 
+    <button id="btn-dark-mode" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px;" title="Alternar tema">🌙</button>
     <script>
         const parametrosURL = new URLSearchParams(window.location.search);
         const idCartaSeleccionada = parametrosURL.get('id');

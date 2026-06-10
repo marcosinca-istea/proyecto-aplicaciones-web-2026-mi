@@ -17,6 +17,8 @@
             <a href="catalogo.html" class="active">Catálogo</a>
             <a href="admin.html">Panel Admin</a>
             <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 15px; border-radius: 20px; color: white; cursor: pointer; transition: 0.2s; font-weight: bold;">🛒 Carrito (0)</span>
+            
+            <button id="btn-dark-mode" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px;" title="Alternar tema">🌙</button>
         </nav>
     </header>
 
@@ -77,12 +79,13 @@
         </div>
     </div>
     
+    <script src="darkmode.js"></script>
     <script src="carrito.js"></script>
     
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        // Mismas credenciales
+        // Credenciales
         const SUPABASE_URL = 'https://sekoqjsonihqujslleow.supabase.co';
         const ANON_KEY = 'sb_publishable_TeGqL0RKJW1sPqoOWARLhQ_TiFtueAC'; 
         const db = createClient(SUPABASE_URL, ANON_KEY);
@@ -96,7 +99,7 @@
         const checkboxesNivel = document.querySelectorAll('.check-nivel');
         let filtroPrecioActual = 'todos';
 
-        // 1. Función asíncrona para traer cartas desde Supabase (Método .select)
+        // 1. Función asíncrona para traer cartas desde Supabase
         const cargarProductos = async () => {
             try {
                 const { data, error } = await db.from('productos').select('*');
