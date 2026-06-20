@@ -15,25 +15,29 @@
             <a href="catalogo.html">Catálogo</a>
             <a href="contacto.html" class="active">Contacto</a>
             <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 15px; border-radius: 20px; color: white; cursor: pointer; transition: 0.2s; font-weight: bold;">🛒 Carrito (0)</span>
+            <button id="btn-dark-mode" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px;" title="Alternar tema">🌙</button>
         </nav>
     </header>
 
     <main class="main-detalle">
         <div class="contenedor-detalle">
-            <section class="producto-detalle" style="flex-direction: column; gap: 20px;">
+            <section class="producto-detalle" style="flex-direction: column;">
                 <h1>Contactate con nosotros</h1>
-                <p>¿Tenés dudas sobre una carta o buscás alguna edición especial? Dejanos tu mensaje.</p>
+                <p class="texto-ayuda">¿Tenés dudas sobre una carta o buscás alguna edición especial? Dejanos tu mensaje.</p>
                 
-                <div style="display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
-                    <div style="flex: 1; min-width: 280px;">
-                        <h3 style="margin-bottom: 15px; color: var(--color-primario);">Información de la Tienda</h3>
-                        <p style="margin-bottom: 10px;">📍 <strong>Dirección:</strong> Av. Domino 789, Ciudad de Neo Domino</p>
-                        <p style="margin-bottom: 10px;">📧 <strong>Email:</strong> soporte@neodominocards.com</p>
-                        <p style="margin-bottom: 10px;">📞 <strong>Teléfono:</strong> +54 11 1234-5678</p>
-                        <p>⏰ <strong>Horarios:</strong> Lunes a Viernes de 10:00 a 19:00 hs.</p>
+                <div class="layout-checkout" style="margin-top: 10px;">
+                    
+                    <div class="seccion-resumen">
+                        <h3>Información de la Tienda</h3>
+                        <ul class="caracteristicas" style="margin-top: 15px;">
+                            <li>📍 <strong>Dirección:</strong> Av. Domino 789</li>
+                            <li>📧 <strong>Email:</strong> soporte@neodominocards.com</li>
+                            <li>📞 <strong>Teléfono:</strong> +54 11 1234-5678</li>
+                            <li>⏰ <strong>Horarios:</strong> L a V de 10 a 19 hs.</li>
+                        </ul>
                     </div>
 
-                    <div style="flex: 2; min-width: 300px;">
+                    <div class="seccion-formulario">
                         <form id="form-contacto" class="formulario-resena">
                             <div class="grupo-input">
                                 <label for="nombre-contacto">Nombre completo:</label>
@@ -58,6 +62,7 @@
                             <button type="submit" class="btn-comprar btn-grande">Enviar Mensaje</button>
                         </form>
                     </div>
+
                 </div>
             </section>
         </div>
@@ -79,13 +84,15 @@
         </div>
     </div>
 
+    <!-- Scripts unificados -->
+    <script src="storage.js"></script>
+    <script src="darkmode.js"></script>
     <script src="carrito.js"></script>
     <script>
         document.getElementById('form-contacto').addEventListener('submit', (e) => {
             e.preventDefault();
-            const nombre = document.getElementById('nombre-contacto').value;
-            alert(`¡Gracias ${nombre}! Recibimos tu mensaje correctamente. Te responderemos al mail a la brevedad.`);
-            window.location.href = 'index.html';
+            alert(`¡Gracias ${document.getElementById('nombre-contacto').value}! Recibimos tu mensaje correctamente.`);
+            e.target.reset(); // Vaciamos el form en lugar de redirigir bruscamente
         });
     </script>
 </body>
