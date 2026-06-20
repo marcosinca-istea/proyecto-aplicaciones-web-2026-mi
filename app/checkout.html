@@ -20,7 +20,7 @@
             
             <section class="seccion-resenas seccion-formulario">
                 <h2>Datos de facturación y envío</h2>
-                <p class="texto-ayuda">Completá tus datos para finalizar la compra de tus cartas.</p>
+                <p class="texto-ayuda">Completá tus datos para finalizar la compra.</p>
                 
                 <form id="form-checkout" class="formulario-resena">
                     <div class="grupo-input">
@@ -45,9 +45,7 @@
             <section class="seccion-resenas seccion-resumen">
                 <h2>Resumen de tu pedido</h2>
                 <hr class="separador">
-                
                 <div id="checkout-items" class="lista-items-checkout"></div>
-                
                 <hr class="separador">
                 <h3 id="checkout-total" class="precio-total">Total: $0 ARS</h3>
             </section>
@@ -57,41 +55,43 @@
 
     <script src="storage.js"></script>
     <script>
-        // 1. Usamos nuestra nueva herramienta segura para leer la memoria
+        // 1. Carga y Seguridad
         const carrito = StorageDB.leer('carrito', []);
+        if (!carrito.length) window.location.href = 'index.html';
 
-        // 2. Seguridad
-        if (carrito.length === 0) {
-            window.location.href = 'index.html';
-        }
+        // 2. Renderizado Optimizado (Map + Reduce)
+        document.getElementById('checkout-items').innerHTML = carrito.map(item => `
+            <div class="item-resumen">
+                <span>${item.cantidad}x <strong>${item.nombre}</strong></span>
+                <span>$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+            </div>
+        `).join('');
 
-        // 3. Renderizamos el resumen
-        const checkoutItems = document.getElementById('checkout-items');
-        const checkoutTotal = document.getElementById('checkout-total');
-        let totalAPagar = 0;
+        const totalAPagar = carrito.reduce((suma, item) => suma + (item.precio * item.cantidad), 0);
+        document.getElementById('checkout-total').textContent = `Total: $${totalAPagar.toLocaleString('es-AR')} ARS`;
 
-        carrito.forEach(item => {
-            const subtotal = item.precio * item.cantidad;
-            totalAPagar += subtotal;
-            
-            checkoutItems.innerHTML += `
-                <div class="item-resumen">
-                    <span>${item.cantidad}x <strong>${item.nombre}</strong></span>
-                    <span>$${subtotal.toLocaleString('es-AR')}</span>
-                </div>
-            `;
+        // 3. Persistencia de Formulario (sessionStorage)
+        const form = document.getElementById('form-checkout');
+        const inputNombre = document.getElementById('nombre');
+        const inputDir = document.getElementById('direccion');
+
+        // Recuperar si el usuario apretó F5
+        inputNombre.value = sessionStorage.getItem('form_nombre') || '';
+        inputDir.value = sessionStorage.getItem('form_dir') || '';
+
+        // Guardar mientras tipea
+        form.addEventListener('input', (e) => {
+            if (e.target.id === 'nombre') sessionStorage.setItem('form_nombre', e.target.value);
+            if (e.target.id === 'direccion') sessionStorage.setItem('form_dir', e.target.value);
         });
 
-        checkoutTotal.textContent = `Total: $${totalAPagar.toLocaleString('es-AR')} ARS`;
-
-        // 4. Lógica de pago
-        document.getElementById('form-checkout').addEventListener('submit', (e) => {
+        // 4. Procesar Pago
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-
-            alert("¡Pago procesado con éxito! Tus cartas ya están en preparación para el envío.");
+            alert("¡Pago procesado con éxito! Tus cartas ya están en preparación.");
             
-            // Usamos nuestra herramienta para borrar
-            StorageDB.borrar('carrito');
+            StorageDB.borrar('carrito'); 
+            sessionStorage.clear(); // Limpiamos los inputs guardados
             
             window.location.href = 'index.html';
         });
