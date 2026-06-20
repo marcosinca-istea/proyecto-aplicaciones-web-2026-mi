@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle de Carta</title>
+    <title>Detalle de Carta | Neo Domino Cards</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
@@ -12,9 +12,12 @@
         <h2>Neo Domino Cards</h2>
         <nav>
             <a href="index.html">Inicio</a>
-            <a href="catalogo.html#catalogo">Catálogo</a>
+            <a href="catalogo.html">Catálogo</a>
             <a href="contacto.html">Contacto</a>
             <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 10px; border-radius: 15px; color: white; cursor: pointer; transition: 0.2s;">🛒 (0)</span>
+            
+            <!-- Botón Modo Oscuro reubicado correctamente -->
+            <button id="btn-dark-mode" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px;" title="Alternar tema">🌙</button>
         </nav>
     </header>
 
@@ -24,7 +27,7 @@
 
             <section class="producto-detalle">
                 <div class="imagen-container">
-                    <img id="detalle-img" src="" alt="Carta">
+                    <img id="detalle-img" src="" alt="Cargando...">
                 </div>
                 
                 <div class="info-container">
@@ -39,7 +42,7 @@
                         <li><strong>Nivel/Rango:</strong> <span id="detalle-nivel"></span></li>
                     </ul>
 
-                    <button id="btn-agregar-dinamico" class="btn-comprar btn-grande">Agregar al carrito</button>
+                    <button id="btn-agregar-dinamico" class="btn-comprar btn-grande" style="display: none;">Agregar al carrito</button>
                 </div>
             </section>
         </div>
@@ -61,40 +64,68 @@
         </div>
     </div>
 
+    <script src="storage.js"></script>
     <script src="darkmode.js"></script>
-    <script src="productos.js"></script>
     <script src="carrito.js"></script>
+    
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    <button id="btn-dark-mode" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px;" title="Alternar tema">🌙</button>
-    <script>
+        // Credenciales
+        const SUPABASE_URL = 'https://sekoqjsonihqujslleow.supabase.co';
+        const ANON_KEY = 'sb_publishable_TeGqL0RKJW1sPqoOWARLhQ_TiFtueAC'; 
+        const db = createClient(SUPABASE_URL, ANON_KEY);
+
+        // Obtenemos el ID de la URL
         const parametrosURL = new URLSearchParams(window.location.search);
         const idCartaSeleccionada = parametrosURL.get('id');
-        const cartaEncontrada = baseDeDatosCartas.find((carta) => carta.id === idCartaSeleccionada);
 
-        if (cartaEncontrada) {
-            document.title = `${cartaEncontrada.nombre} | Neo Domino Cards`; 
-            
-            document.getElementById('detalle-img').src = cartaEncontrada.imagen;
-            document.getElementById('detalle-img').alt = cartaEncontrada.nombre;
-            document.getElementById('detalle-titulo').textContent = cartaEncontrada.nombre;
-            document.getElementById('detalle-edicion').textContent = cartaEncontrada.edicion;
-            document.getElementById('detalle-desc').textContent = cartaEncontrada.descripcion;
-            document.getElementById('detalle-tipo').textContent = cartaEncontrada.tipo;
-            document.getElementById('detalle-nivel').textContent = cartaEncontrada.nivel;
-            document.getElementById('detalle-precio').textContent = `$${cartaEncontrada.precio.toLocaleString('es-AR')} ARS`;
+        const cargarDetalle = async () => {
+            if (!idCartaSeleccionada) return mostrarError();
 
-            // Configurar el botón de agregar usando el archivo compartido
-            const botonComprar = document.getElementById('btn-agregar-dinamico');
-            botonComprar.addEventListener('click', () => {
-                // Llamamos a la función maestra de carrito.js
-                agregarItemAlCarrito(cartaEncontrada.nombre, cartaEncontrada.precio, cartaEncontrada.imagen, botonComprar);
-            });
-        } else {
+            try {
+                // Fetch a Supabase buscando solo el ID correspondiente
+                const { data, error } = await db.from('productos')
+                                                .select('*')
+                                                .eq('id', idCartaSeleccionada)
+                                                .single();
+
+                if (error || !data) throw error;
+
+                // Renderizamos los datos
+                document.title = `${data.nombre} | Neo Domino Cards`; 
+                document.getElementById('detalle-img').src = data.imagen;
+                document.getElementById('detalle-img').alt = data.nombre;
+                document.getElementById('detalle-titulo').textContent = data.nombre;
+                
+                // Valores por defecto en caso de que estas columnas no estén en la DB
+                document.getElementById('detalle-edicion').textContent = data.edicion || 'Original Synchro';
+                document.getElementById('detalle-desc').textContent = data.descripcion || '';
+                document.getElementById('detalle-tipo').textContent = data.tipo || 'Dragón / Sincronía / Efecto';
+                document.getElementById('detalle-nivel').textContent = data.nivel;
+                document.getElementById('detalle-precio').textContent = `$${data.precio.toLocaleString('es-AR')} ARS`;
+
+                // Mostramos el botón y le damos vida
+                const botonComprar = document.getElementById('btn-agregar-dinamico');
+                botonComprar.style.display = 'block';
+                botonComprar.addEventListener('click', () => {
+                    agregarItemAlCarrito(data.nombre, data.precio, data.imagen, botonComprar);
+                });
+
+            } catch (error) {
+                console.error("Error cargando la carta:", error);
+                mostrarError();
+            }
+        };
+
+        const mostrarError = () => {
             document.getElementById('detalle-titulo').textContent = "Carta no encontrada";
-            document.getElementById('btn-agregar-dinamico').style.display = "none";
-        }
+            document.getElementById('detalle-desc').textContent = "El producto que buscas no existe o fue eliminado de la base de datos.";
+            document.getElementById('detalle-img').src = "img/placeholder.webp"; // Opcional
+        };
+
+        // Ejecutamos al cargar la vista
+        cargarDetalle();
     </script>
-</body>
-</html>
 </body>
 </html>
