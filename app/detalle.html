@@ -15,8 +15,6 @@
             <a href="catalogo.html">Catálogo</a>
             <a href="contacto.html">Contacto</a>
             <span id="cart-counter" style="background: var(--color-secundario); padding: 5px 10px; border-radius: 15px; color: white; cursor: pointer; transition: 0.2s;">🛒 (0)</span>
-            
-            <!-- Botón Modo Oscuro reubicado correctamente -->
             <button id="btn-dark-mode" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px;" title="Alternar tema">🌙</button>
         </nav>
     </header>
@@ -71,60 +69,56 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        // Credenciales
         const SUPABASE_URL = 'https://sekoqjsonihqujslleow.supabase.co';
         const ANON_KEY = 'sb_publishable_TeGqL0RKJW1sPqoOWARLhQ_TiFtueAC'; 
         const db = createClient(SUPABASE_URL, ANON_KEY);
 
-        // Obtenemos el ID de la URL
         const parametrosURL = new URLSearchParams(window.location.search);
-        const idCartaSeleccionada = parametrosURL.get('id');
+        const idCarta = parametrosURL.get('id');
 
         const cargarDetalle = async () => {
-            if (!idCartaSeleccionada) return mostrarError();
+            if (!idCarta) {
+                mostrarError();
+                return;
+            }
 
             try {
-                // Fetch a Supabase buscando solo el ID correspondiente
-                const { data, error } = await db.from('productos')
-                                                .select('*')
-                                                .eq('id', idCartaSeleccionada)
-                                                .single();
+                // Traemos una sola fila que coincida con el ID de la URL
+                const { data, error } = await db.from('productos').select('*').eq('id', idCarta).single();
 
                 if (error || !data) throw error;
 
-                // Renderizamos los datos
+                // Inyectamos los datos en el DOM
                 document.title = `${data.nombre} | Neo Domino Cards`; 
                 document.getElementById('detalle-img').src = data.imagen;
                 document.getElementById('detalle-img').alt = data.nombre;
                 document.getElementById('detalle-titulo').textContent = data.nombre;
-                
-                // Valores por defecto en caso de que estas columnas no estén en la DB
-                document.getElementById('detalle-edicion').textContent = data.edicion || 'Original Synchro';
-                document.getElementById('detalle-desc').textContent = data.descripcion || '';
-                document.getElementById('detalle-tipo').textContent = data.tipo || 'Dragón / Sincronía / Efecto';
-                document.getElementById('detalle-nivel').textContent = data.nivel;
                 document.getElementById('detalle-precio').textContent = `$${data.precio.toLocaleString('es-AR')} ARS`;
+                document.getElementById('detalle-nivel').textContent = data.nivel;
+                
+                document.getElementById('detalle-edicion').textContent = data.edicion || 'Original Synchro';
+                document.getElementById('detalle-desc').textContent = data.descripcion || 'Cartas Sueltas - Excelente estado.';
+                document.getElementById('detalle-tipo').textContent = data.tipo || 'Dragón / Sincronía / Efecto';
 
-                // Mostramos el botón y le damos vida
-                const botonComprar = document.getElementById('btn-agregar-dinamico');
-                botonComprar.style.display = 'block';
-                botonComprar.addEventListener('click', () => {
-                    agregarItemAlCarrito(data.nombre, data.precio, data.imagen, botonComprar);
+                // Mostramos el botón y asignamos el evento
+                const btnComprar = document.getElementById('btn-agregar-dinamico');
+                btnComprar.style.display = 'block';
+                btnComprar.addEventListener('click', () => {
+                    agregarItemAlCarrito(data.nombre, data.precio, data.imagen, btnComprar);
                 });
 
             } catch (error) {
-                console.error("Error cargando la carta:", error);
+                console.error("Error al obtener la carta:", error);
                 mostrarError();
             }
         };
 
         const mostrarError = () => {
             document.getElementById('detalle-titulo').textContent = "Carta no encontrada";
-            document.getElementById('detalle-desc').textContent = "El producto que buscas no existe o fue eliminado de la base de datos.";
-            document.getElementById('detalle-img').src = "img/placeholder.webp"; // Opcional
+            document.getElementById('detalle-desc').textContent = "Hubo un problema al cargar la información desde la base de datos.";
+            document.getElementById('detalle-img').src = "img/placeholder.webp"; 
         };
 
-        // Ejecutamos al cargar la vista
         cargarDetalle();
     </script>
 </body>
